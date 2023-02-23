@@ -110,14 +110,6 @@ export class MyScene extends CGFscene {
     //scaling to center tangram in the base
     this.scale(4, 1, 4);
     if (this.displayCube) this.cube.display();
-    this.popMatrix(); 
-    //this.square.display();
-
-    this.pushMatrix();
-    //-0.51 instead of -0.5 to avoid overlapping
-    this.translate(2, -0.51, 2);
-    //scaling to center tangram in the base
-    this.scale(4, 1, 4);
     if (this.displayCubeQuad) this.cubeQuad.display();
     this.popMatrix(); 
 
