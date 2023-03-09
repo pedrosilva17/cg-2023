@@ -9,3 +9,11 @@
 
 ![Screenshot 1](screenshots/cg-t10g02-tp3-1.png)
 ![Screenshot 2](screenshots/cg-t10g02-tp3-2.png)
+
+- Exercise 2 was one of the most challenging exercises yet. Generating the vertices was not easy at first, nor was finding the formula for the indices, but eventually we found out through constant experimentation.
+
+![Screenshot 3](screenshots/cg-t10g02-tp3-3.png)
+
+- When using diffuse or specular materials and an appropriate light source, we can accomplish the illusion of a round surface as seen in the screenshot, which only increases in quality as we add more slices and stacks.
+
+![Screenshot 4](screenshots/cg-t10g02-tp3-4.png)
