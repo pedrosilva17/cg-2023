@@ -1,6 +1,7 @@
 import { CGFscene, CGFcamera, CGFaxis, CGFappearance, CGFtexture } from "../lib/CGF.js";
 import { MyQuad } from "./MyQuad.js";
 import { MyTangram } from "./MyTangram.js";
+import { MyUnitCubeQuad } from "./MyUnitCubeQuad.js";
 
 /**
  * MyScene
@@ -30,6 +31,11 @@ export class MyScene extends CGFscene {
         this.quad = new MyQuad(this);
         this.tangram = new MyTangram(this);
 
+        this.texTop = new CGFtexture(this, "images/mineTop.png");
+        this.texSides = new CGFtexture(this, "images/mineSide.png");
+        this.texBottom = new CGFtexture(this, "images/mineBottom.png");
+        this.cube = new MyUnitCubeQuad(this, this.texTop, this.texSides, this.texSides, this.texSides, this.texSides, this.texBottom);
+
         //------ Applied Material
         this.quadMaterial = new CGFappearance(this);
         this.quadMaterial.setAmbient(0.1, 0.1, 0.1, 1);
@@ -56,7 +62,9 @@ export class MyScene extends CGFscene {
         //-------Objects connected to MyInterface
         this.displayAxis = true;
         this.displayQuad = false;
-        this.displayTangram = true;
+        this.displayTangram = false;
+        this.displayCube = true;
+        this.toggleNearest = true;
         this.scaleFactor = 5;
         this.selectedTexture = -1;        
         this.wrapS = 0;
@@ -84,10 +92,7 @@ export class MyScene extends CGFscene {
     }
 
     setDefaultAppearance() {
-        this.setAmbient(0.2, 0.4, 0.8, 1.0);
-        this.setDiffuse(0.2, 0.4, 0.8, 1.0);
-        this.setSpecular(0.2, 0.4, 0.8, 1.0);
-        this.setShininess(10.0);
+        this.setGlobalAmbientLight(1, 1, 1, 1);
     }
 
     //Function that resets selected texture in quadMaterial
@@ -155,10 +160,13 @@ export class MyScene extends CGFscene {
         // Uncomment next line for NEAREST when magnifying, or 
         // add a checkbox in the GUI to alternate in real time
         
-        // this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
-
         if (this.displayQuad) this.quad.display();
         if (this.displayTangram) this.tangram.display();
+        if (this.toggleNearest) 
+            this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
+        else 
+            this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
+        if (this.displayCube) this.cube.display();
 
         // ---- END Primitive drawing section
     }
