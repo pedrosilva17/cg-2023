@@ -30,7 +30,7 @@ export class ShaderScene extends CGFscene {
 		this.selectedExampleShader = 11;
 		this.showShaderCode = false;
 
-		this.scaleFactor = 0.5;
+		this.scaleFactor = 5;
 	}
 
 	init(application) {
