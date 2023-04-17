@@ -1,6 +1,6 @@
 import { CGFscene, CGFcamera, CGFaxis, CGFappearance, CGFshader, CGFtexture } from "../lib/CGF.js";
 import { MyPlane } from "./MyPlane.js";
-import { MySphere } from "./primitives/MySphere.js";
+import { MyPanorama } from "./objects/MyPanorama.js";
 
 /**
  * MyScene
@@ -23,11 +23,14 @@ export class MyScene extends CGFscene {
     this.gl.enable(this.gl.DEPTH_TEST);
     this.gl.enable(this.gl.CULL_FACE);
     this.gl.depthFunc(this.gl.LEQUAL);
+    
+    this.scenery = new CGFtexture(this, "images/panorama4.jpg");
 
     //Initialize scene objects
     this.axis = new CGFaxis(this);
     this.plane = new MyPlane(this,30);
-    this.sphere = new MySphere(this, 90, 180);
+    this.panorama = new MyPanorama(this, this.scenery);
+
 
     //Objects connected to MyInterface
     this.displayAxis = true;
@@ -86,7 +89,7 @@ export class MyScene extends CGFscene {
     this.plane.display();
     this.popMatrix();
 
-    this.sphere.display();
+    this.panorama.display();
 
     // ---- END Primitive drawing section
   }
