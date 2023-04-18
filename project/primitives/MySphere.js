@@ -25,16 +25,14 @@ export class MySphere extends CGFobject {
     
     const latDelta = Math.PI / this.latitude;
     const lonDelta = (2 * Math.PI) / this.longitude;
-    let latAngle = 0;
-    let lonAngle = 0;
 
     for (let i = 0; i < this.latitude; i++) {
-        const latCos = Math.cos(latAngle + i * latDelta);
-        const latSin = Math.sin(latAngle + i * latDelta);
+        const latCos = Math.cos(i * latDelta);
+        const latSin = Math.sin(i * latDelta);
         
         for (let j = 0; j <= this.longitude; j++) {
-            const lonCos = Math.cos(lonAngle + j * lonDelta);
-            const lonSin = Math.sin(lonAngle + j * lonDelta);
+            const lonCos = Math.cos(j * lonDelta);
+            const lonSin = Math.sin(j * lonDelta);
 
             const x = lonSin * latSin;
             const y = latCos;
