@@ -12,7 +12,6 @@ export class MyPanorama extends CGFobject {
         this.texture = texture;
         this.sphere = new MySphere(scene, 90, 180, true, 200);
 		this.appearance = new CGFappearance(scene);
-
 	}
 	
 	display() {
@@ -23,7 +22,5 @@ export class MyPanorama extends CGFobject {
 		this.sphere.display();
 
 		this.primitiveType = this.scene.gl.TRIANGLES;
-
-		this.initGLBuffers();
 	}
 }
