@@ -1,4 +1,4 @@
-import { CGFobject } from "../lib/CGF.js";
+import { CGFobject } from "../../lib/CGF.js";
 /**
  * MyTriangle
  * @constructor
@@ -9,6 +9,8 @@ export class MyTriangle extends CGFobject {
     super(scene);
     this.texCoords = coords;
     this.initBuffers();
+    if (coords != undefined)
+			this.updateTexCoords(coords);
   }
 
   initBuffers() {
@@ -16,17 +18,31 @@ export class MyTriangle extends CGFobject {
       -1, 1, 0, //0
       -1, -1, 0, //1
       1, -1, 0, //2
+      -1, 1, 0, //3 (0)
+      -1, -1, 0, //4 (1)
+      1, -1, 0, //5 (2)
     ];
 
     this.normals = [
 			0, 0, 1,	//0
 			0, 0, 1,	//1
 			0, 0, 1,	//2
+			0, 0, -1,	//0
+			0, 0, -1,	//1
+			0, 0, -1,	//2
 		];
 
+    this.texCoords = [
+      0, 0, 
+      1, 0, 
+      1, 1, 
+      0, 0, 
+      1, 0, 
+      1, 1
+    ];
+
     //Counter-clockwise reference of vertices
-    this.indices = [0, 1, 2];
-    console.log(this.texCoords);
+    this.indices = [0, 1, 2, 5, 4, 3];
     this.primitiveType = this.scene.gl.TRIANGLES;
 
     this.initGLBuffers();

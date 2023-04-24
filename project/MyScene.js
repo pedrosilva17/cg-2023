@@ -56,7 +56,8 @@ export class MyScene extends CGFscene {
       1.0,
       0.1,
       1000,
-      vec3.fromValues(50, 10, 15),
+      //vec3.fromValues(50, 10, 15),
+      vec3.fromValues(5, 3, 5),
       vec3.fromValues(0, 0, 0)
     );
   }
@@ -89,6 +90,7 @@ export class MyScene extends CGFscene {
     this.rotate(-Math.PI/2.0,1,0,0);
     this.plane.display();
     this.popMatrix();
+    this.setDefaultAppearance();
 
     this.panorama.display();
 

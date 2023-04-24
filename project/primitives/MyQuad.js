@@ -1,4 +1,4 @@
-import {CGFobject} from '../lib/CGF.js';
+import {CGFobject} from '../../lib/CGF.js';
 /**
  * MyQuad
  * @constructor
@@ -18,21 +18,31 @@ export class MyQuad extends CGFobject {
 			0.5, 0, 0.5, //0
 			0.5, 0, -0.5, //1
 			-0.5, 0, 0.5, //2
-			-0.5, 0, -0.5 //3
+			-0.5, 0, -0.5, //3
+			0.5, 0, 0.5, //4
+			0.5, 0, -0.5, //5
+			-0.5, 0, 0.5, //6
+			-0.5, 0, -0.5 //7
 		];
 
 		//Counter-clockwise reference of vertices
 		this.indices = [
 			0, 1, 2,
-			3, 2, 1
+			3, 2, 1,
+			6, 5, 4,
+			5, 6, 7
 		];
 
 		//Facing Z positive
 		this.normals = [
-			0, 0, 1,
-			0, 0, 1,
-			0, 0, 1,
-			0, 0, 1
+			0, 1, 0,
+			0, 1, 0,
+			0, 1, 0,
+			0, 1, 0,
+			0, -1, 0,
+			0, -1, 0,
+			0, -1, 0,
+			0, -1, 0,
 		];
 		
 		/*
@@ -46,10 +56,14 @@ export class MyQuad extends CGFobject {
         */
 
 		this.texCoords = [
-			0, 0,
+			1, 1,
 			1, 0,
 			0, 1,
-			1, 1
+			0, 0,
+			1, 1,
+			1, 0,
+			0, 1,
+			0, 0
 		]
 		this.primitiveType = this.scene.gl.TRIANGLES;
 		this.initGLBuffers();

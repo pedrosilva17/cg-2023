@@ -16,6 +16,7 @@ export class MyPrism extends CGFobject {
     this.vertices = [];
     this.normals = [];
     this.indices = [];
+    this.texCoords = [];
     const angle = (2 * Math.PI) / this.slices;
     const ver_per_face = 2 * this.slices;
 
@@ -41,6 +42,8 @@ export class MyPrism extends CGFobject {
           Math.cos(angle * j) - Math.cos(angle * (j + 1)),
           0
         );
+        this.texCoords.push(i / this.stacks, j / this.slices);
+        this.texCoords.push(i / this.stacks, (j + 1) / this.slices);
       }
     }
 
@@ -50,10 +53,16 @@ export class MyPrism extends CGFobject {
         this.indices.push((l*2) % ver_per_face+(k * (ver_per_face)));
         this.indices.push((l*2) % ver_per_face+(k * (ver_per_face))+1);
         this.indices.push((l*2) % ver_per_face+((k+1) * (ver_per_face)));
+        this.indices.push((l*2) % ver_per_face+((k+1) * (ver_per_face)));
+        this.indices.push((l*2) % ver_per_face+(k * (ver_per_face))+1);
+        this.indices.push((l*2) % ver_per_face+(k * (ver_per_face)));
         // triangle 2
         this.indices.push((l*2) % ver_per_face+(k * (ver_per_face))+1);
         this.indices.push((l*2) % ver_per_face+((k+1) * (ver_per_face))+1);
         this.indices.push((l*2) % ver_per_face+((k+1) * (ver_per_face)));
+        this.indices.push((l*2) % ver_per_face+((k+1) * (ver_per_face)));
+        this.indices.push((l*2) % ver_per_face+((k+1) * (ver_per_face))+1);
+        this.indices.push((l*2) % ver_per_face+(k * (ver_per_face))+1);
       }
     }
 

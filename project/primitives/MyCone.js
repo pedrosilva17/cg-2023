@@ -39,6 +39,7 @@ export class MyCone extends CGFobject {
       this.texCoords.push(j/this.slices, 0);
 
       this.indices.push(cnt, cnt+2, cnt+1);
+      this.indices.push(cnt+1, cnt+2, cnt)
      
       cnt += 3;
     }
