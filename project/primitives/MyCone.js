@@ -5,7 +5,7 @@ import { CGFobject } from "../../lib/CGF.js";
  * @param scene - Reference to MyScene object
  */
 export class MyCone extends CGFobject {
-  constructor(scene, slices, texture) {
+  constructor(scene, slices) {
     super(scene);
     this.slices = slices; // bottom circle
     this.initBuffers();

@@ -26,7 +26,7 @@ export class MySphere extends CGFobject {
     const latDelta = Math.PI / this.latitude;
     const lonDelta = (2 * Math.PI) / this.longitude;
 
-    for (let i = 0; i < this.latitude; i++) {
+    for (let i = 0; i <= this.latitude; i++) {
         const latCos = Math.cos(i * latDelta);
         const latSin = Math.sin(i * latDelta);
         
@@ -46,7 +46,7 @@ export class MySphere extends CGFobject {
                 this.normals.push(x, y, z);
             }
             
-            if (i != this.latitude - 1) {
+            if (i != this.latitude) {
                 const current = i * (this.longitude + 1) + j;
                 const next = (i * (this.longitude + 1) + (j + 1) % (this.longitude + 1));
                 const currentForward = (i + 1) * (this.longitude + 1) + j;
