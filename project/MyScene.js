@@ -1,7 +1,7 @@
 import { CGFscene, CGFcamera, CGFaxis, CGFappearance, CGFshader, CGFtexture } from "../lib/CGF.js";
 import { MyPlane } from "./MyPlane.js";
 import { MyPanorama } from "./objects/MyPanorama.js";
-import { MyBird } from "./objects/MyBird.js";
+import { MyAnimatedCreature } from "./objects/MyAnimatedCreature.js";
 
 /**
  * MyScene
@@ -31,11 +31,15 @@ export class MyScene extends CGFscene {
     this.axis = new CGFaxis(this);
     this.plane = new MyPlane(this,30);
     this.panorama = new MyPanorama(this, this.scenery);
-    this.bird = new MyBird(this);
+    this.creature = new MyAnimatedCreature(this);
+
+    this.setUpdatePeriod(20);
+    this.appStartTime = Date.now();
+    this.animatedObjects = [this.creature];
 
     //Objects connected to MyInterface
     this.displayAxis = true;
-    this.scaleFactor = 1;
+    this.creatureSize = 1;
 
     this.enableTextures(true);
 
@@ -56,7 +60,6 @@ export class MyScene extends CGFscene {
       1.0,
       0.1,
       1000,
-      //vec3.fromValues(50, 10, 15),
       vec3.fromValues(5, 3, 5),
       vec3.fromValues(0, 0, 0)
     );
@@ -67,6 +70,14 @@ export class MyScene extends CGFscene {
     this.setSpecular(0.2, 0.4, 0.8, 1.0);
     this.setShininess(10.0);
   }
+
+  update(t)
+  {
+    let timeSinceAppStart = (t - this.appStartTime) / 1000.0;
+    for (let i=0;i<this.animatedObjects.length;i++)
+      this.animatedObjects[i].update(timeSinceAppStart);
+  }
+
   display() {
     // ---- BEGIN Background, camera and axis setup
     // Clear image and depth buffer everytime we update the scene
@@ -94,7 +105,10 @@ export class MyScene extends CGFscene {
 
     this.panorama.display();
 
-    this.bird.display();
+    this.pushMatrix();
+    this.scale(this.creatureSize, this.creatureSize, this.creatureSize);
+    this.creature.display();
+    this.popMatrix();
     
     // ---- END Primitive drawing section
   }

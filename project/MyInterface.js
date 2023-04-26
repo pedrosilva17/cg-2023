@@ -1,28 +1,57 @@
-import {CGFinterface, dat} from '../lib/CGF.js';
+import { CGFinterface, dat } from "../lib/CGF.js";
 
 /**
-* MyInterface
-* @constructor
-*/
+ * MyInterface
+ * @constructor
+ */
 export class MyInterface extends CGFinterface {
-    constructor() {
-        super();
-    }
+	constructor() {
+		super();
+	}
 
-    init(application) {
-        // call CGFinterface init
-        super.init(application);
+	init(application) {
+		// call CGFinterface init
+		super.init(application);
+
+		// init GUI. For more information on the methods, check:
+		// https://github.com/dataarts/dat.gui/blob/master/API.md
+		this.gui = new dat.GUI();
+
+		//Checkbox element in GUI
+		this.gui.add(this.scene, "displayAxis").name("Display Axis");
+
+		//Slider element in GUI
+		this.gui.add(this.scene, "creatureSize", 0.1, 5).name("Creature Size");
+
+		this.initKeys();
         
-        // init GUI. For more information on the methods, check:
-        // https://github.com/dataarts/dat.gui/blob/master/API.md
-        this.gui = new dat.GUI();
+		return true;
+	}
 
-        //Checkbox element in GUI
-        this.gui.add(this.scene, 'displayAxis').name('Display Axis');
+	initKeys() {
+		// create reference from the scene to the GUI
+		this.scene.gui = this;
 
-        //Slider element in GUI
-        this.gui.add(this.scene, 'scaleFactor', 0.1, 5).name('Scale Factor');
+		// disable the processKeyboard function
+		this.processKeyboard = function () {};
 
-        return true;
-    }
+		// create a named array to store which keys are being pressed
+		this.activeKeys = {};
+	}
+
+	processKeyDown(event) {
+		// called when a key is pressed down
+		// mark it as active in the array
+		this.activeKeys[event.code] = true;
+	}
+
+	processKeyUp(event) {
+		// called when a key is released, mark it as inactive in the array
+		this.activeKeys[event.code] = false;
+	}
+
+	isKeyPressed(keyCode) {
+		// returns true if a key is marked as pressed, false otherwise
+		return this.activeKeys[keyCode] || false;
+	}
 }
