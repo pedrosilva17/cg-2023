@@ -9,13 +9,43 @@ export class MyAnimatedCreature extends MyAnimatedObject {
 	update(t) {
 		let elapsedTimeSecs = t - this.startTime;
 		//console.log(elapsedTimeSecs);
+		//console.log(this.obj.velocity);
 		this.idleAnimation(elapsedTimeSecs);
+		this.wingBeat(elapsedTimeSecs);
+		this.obj.position["x"] += 1 * this.obj.velocity * Math.cos(this.obj.yAngle);
+		this.obj.position["z"] -= 1 * this.obj.velocity * Math.sin(this.obj.yAngle);
+		this.obj.velocity = this.obj.velocity <= 0 ? 0 : this.obj.velocity - 0.004 * this.scene.speedFactor;
+	}
+
+	accelerate(v) {
+		this.obj.velocity += v * this.scene.speedFactor;
+		if (this.obj.velocity < 0) this.obj.velocity = 0;
+	}
+
+	turn(a) {
+		this.obj.yAngle += a * this.scene.speedFactor * Math.min(Math.max(1, this.obj.velocity * 2), 3.5);
+	}
+
+	reset() {
+		this.obj.position = {"x": 0, "y": 0, "z": 0};
+		this.obj.yAngle = 0;
+		this.obj.velocity = 0;
 	}
 
 	idleAnimation(t) {
-		if (t >= 0)
-			this.animPos =
-				this.startPos +
-				this.sinWave(Math.PI * t, 0.2) * this.length;
+		if (t >= 0) {
+			this.animPos = this.sinWave(Math.PI * t, 0.2);
+		}
+	}
+
+	wingBeat(t) {
+		if (t >= 0) {
+			this.obj.wingAngle = Math.min(4, 1 + this.obj.velocity * 10) * this.scene.speedFactor * this.sinWave(Math.PI * t, 0.1);
+		}
+	}
+
+	display() {
+		this.scene.pushMatrix();
+		super.display();
 	}
 }

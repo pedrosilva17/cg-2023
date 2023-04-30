@@ -21,6 +21,10 @@ export class MyCreature extends CGFobject {
 		this.limb = new MyLimb(scene);
 		this.leftWing = new MyLeftWing(scene);
 		this.rightWing = new MyRightWing(scene);
+		this.wingAngle = 0;
+		this.yAngle = 0;
+		this.velocity = 0;
+		this.position = {"x": 0, "y": 0, "z": 0};
 
 		this.defaultAppearance = new CGFappearance(scene);
 		this.defaultAppearance.setSpecular(0, 0, 0, 0);
@@ -39,7 +43,9 @@ export class MyCreature extends CGFobject {
 		this.scene.pushMatrix();
 		this.scene.translate(0, 1, 0);
 		this.scene.scale(0.8, 0.8, 0.8);
+		this.leftWing.angle = this.wingAngle;
 		this.leftWing.display();
+		this.rightWing.angle = -this.wingAngle;
 		this.rightWing.display();
 		this.scene.popMatrix();
 	}
@@ -82,10 +88,15 @@ export class MyCreature extends CGFobject {
 	}
 
 	display() {
+		this.scene.pushMatrix();
+		this.scene.translate(this.position["x"], this.position["y"], this.position["z"]);
+		this.scene.scale(this.scene.scaleFactor, this.scene.scaleFactor, this.scene.scaleFactor);
+		this.scene.rotate(this.yAngle, 0, 1, 0);
 		this.displayBody();
 		this.displayEyes();
 		this.displayLimbs();
 		this.displayWings();
+		this.scene.popMatrix();
 		this.primitiveType = this.scene.gl.TRIANGLES;
 	}
 }
