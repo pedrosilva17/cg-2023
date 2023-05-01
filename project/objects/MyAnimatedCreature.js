@@ -46,6 +46,8 @@ export class MyAnimatedCreature extends MyAnimatedObject {
 
 	display() {
 		this.scene.pushMatrix();
+		this.scene.translate(0, this.animPos, 0);
 		super.display();
+		this.scene.popMatrix();
 	}
 }

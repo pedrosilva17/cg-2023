@@ -24,7 +24,7 @@ export class MyCreature extends CGFobject {
 		this.wingAngle = 0;
 		this.yAngle = 0;
 		this.velocity = 0;
-		this.position = {"x": 0, "y": 0, "z": 0};
+		this.position = {"x": 0, "y": -95, "z": 0};
 
 		this.defaultAppearance = new CGFappearance(scene);
 		this.defaultAppearance.setSpecular(0, 0, 0, 0);

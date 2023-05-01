@@ -6,9 +6,9 @@ import {
 	CGFshader,
 	CGFtexture,
 } from "../lib/CGF.js";
-import { MyPlane } from "./MyPlane.js";
 import { MyPanorama } from "./objects/MyPanorama.js";
 import { MyAnimatedCreature } from "./objects/MyAnimatedCreature.js";
+import { MyTerrain } from "./objects/MyTerrain.js";
 
 /**
  * MyScene
@@ -36,7 +36,7 @@ export class MyScene extends CGFscene {
 
 		//Initialize scene objects
 		this.axis = new CGFaxis(this);
-		this.plane = new MyPlane(this, 30);
+		this.plane = new MyTerrain(this, 30);
 		this.panorama = new MyPanorama(this, this.scenery);
 		this.creature = new MyAnimatedCreature(this);
 
@@ -47,7 +47,7 @@ export class MyScene extends CGFscene {
 		//Objects connected to MyInterface
 		this.displayAxis = true;
 		this.scaleFactor = 1;
-    this.speedFactor = 1;
+		this.speedFactor = 1;
 
 		this.enableTextures(true);
 
@@ -67,8 +67,8 @@ export class MyScene extends CGFscene {
 			1.0,
 			0.1,
 			1000,
-			vec3.fromValues(5, 3, 5),
-			vec3.fromValues(0, 0, 0)
+			vec3.fromValues(5, -95, 5),
+			vec3.fromValues(0, -95, 0)
 		);
 	}
 	setDefaultAppearance() {
@@ -146,7 +146,6 @@ export class MyScene extends CGFscene {
 		this.setDefaultAppearance();
 
 		this.panorama.display();
-
 		this.creature.display();
 
 		// ---- END Primitive drawing section

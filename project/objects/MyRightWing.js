@@ -37,6 +37,7 @@ export class MyRightWing extends CGFobject {
 		this.scene.rotate(Math.PI / 16, 0, 1, 0);
 		this.tip.display();
 		this.scene.popMatrix();
+		this.scene.popMatrix();
 		this.primitiveType = this.scene.gl.TRIANGLES;
 	}
 }

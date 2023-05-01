@@ -21,8 +21,6 @@ export class MyAnimatedObject {
     }
 
 	display() {
-		this.scene.translate(0, this.animPos, 0);
 		this.obj.display();
-		this.scene.popMatrix();
 	}
 }
