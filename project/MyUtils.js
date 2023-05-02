@@ -43,4 +43,13 @@ export class MyUtils {
 		let a = parseInt(hex.substring(6, 8), 16) / 255;
 		return [r, g, b, a];
 	}
+
+	static subVector(v1, v2) {
+		return {"x": v1["x"] - v2["x"], "y": v1["y"] - v2["y"], "z": v1["z"] - v2["z"]};
+	}
+
+	static normalize(v) {
+		let length = Math.sqrt(v["x"] ** 2 + v["y"] ** 2 + v["z"] ** 2);
+		return {"x": v["x"] / length, "y": v["y"] / length, "z": v["z"] / length};
+	}
 }

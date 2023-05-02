@@ -9,6 +9,8 @@ import {
 import { MyPanorama } from "./objects/MyPanorama.js";
 import { MyAnimatedCreature } from "./objects/MyAnimatedCreature.js";
 import { MyTerrain } from "./objects/MyTerrain.js";
+import { MyNest } from "./objects/MyNest.js";
+import { MyCreatureEgg } from "./objects/MyCreatureEgg.js";
 
 /**
  * MyScene
@@ -39,6 +41,14 @@ export class MyScene extends CGFscene {
 		this.plane = new MyTerrain(this, 30);
 		this.panorama = new MyPanorama(this, this.scenery);
 		this.creature = new MyAnimatedCreature(this);
+		this.torus = new MyNest(this, 10, 10, 4, 1);
+		this.egg = new MyCreatureEgg(this, 0.5);
+		this.eggList = [
+			new MyCreatureEgg(this, 0.5),
+			new MyCreatureEgg(this, 0.5),
+			new MyCreatureEgg(this, 0.5),
+			new MyCreatureEgg(this, 0.5),
+		];
 
 		this.setUpdatePeriod(20);
 		this.appStartTime = Date.now();
@@ -146,7 +156,13 @@ export class MyScene extends CGFscene {
 		this.setDefaultAppearance();
 
 		this.panorama.display();
+
 		this.creature.display();
+		for (let i = 0; i < this.eggList.length; i++) {
+			this.eggList[i].display();
+		}
+		
+		this.torus.display();
 
 		// ---- END Primitive drawing section
 	}

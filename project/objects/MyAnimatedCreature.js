@@ -27,7 +27,7 @@ export class MyAnimatedCreature extends MyAnimatedObject {
 	}
 
 	reset() {
-		this.obj.position = {"x": 0, "y": 0, "z": 0};
+		this.obj.position = {"x": 0, "y": -95, "z": 0};
 		this.obj.yAngle = 0;
 		this.obj.velocity = 0;
 	}

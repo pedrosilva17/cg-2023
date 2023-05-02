@@ -5,15 +5,13 @@ import { CGFobject } from "../../lib/CGF.js";
  * @param scene - Reference to MyScene object
  */
 export class MySphere extends CGFobject {
-  constructor(scene, slices, stacks, inverted, radius) {
+  constructor(scene, slices, stacks, inverted, radius = 5, fullness = 1) {
     super(scene);
     this.latitude = stacks * 2;
     this.longitude = slices;
     this.inverted = inverted;
     this.radius = radius;
-    if (radius == undefined) {
-      this.radius = 5;
-    }
+    this.fullness = fullness;
     this.initBuffers();
   }
 
@@ -25,8 +23,9 @@ export class MySphere extends CGFobject {
     
     const latDelta = Math.PI / this.latitude;
     const lonDelta = (2 * Math.PI) / this.longitude;
+    const latRange = Math.floor(this.latitude * this.fullness)
 
-    for (let i = 0; i <= this.latitude; i++) {
+    for (let i = 0; i <= latRange; i++) {
         const latCos = Math.cos(i * latDelta);
         const latSin = Math.sin(i * latDelta);
         
@@ -46,19 +45,27 @@ export class MySphere extends CGFobject {
                 this.normals.push(x, y, z);
             }
             
-            if (i != this.latitude) {
+            if (i != latRange) {
                 const current = i * (this.longitude + 1) + j;
                 const next = (i * (this.longitude + 1) + (j + 1) % (this.longitude + 1));
                 const currentForward = (i + 1) * (this.longitude + 1) + j;
                 const nextForward = ((i + 1) * (this.longitude + 1) + (j + 1) % (this.longitude + 1));
                 
-                if (this.inverted) {
+                if (this.latitude != latRange) {
+                  this.indices.push(current, currentForward, next);
+                  this.indices.push(next, currentForward, nextForward);
+                  this.indices.push(next, currentForward, current);
+                  this.indices.push(nextForward, currentForward, next);
+                }
+                else {
+                  if (this.inverted) {
                     this.indices.push(next, currentForward, current);
                     this.indices.push(nextForward, currentForward, next);
-                } else {
+                  } else {
                     this.indices.push(current, currentForward, next);
                     this.indices.push(next, currentForward, nextForward);
-                }       
+                  }       
+                }
             }
 
             this.texCoords.push(j/this.longitude, i/(this.latitude - 1));
