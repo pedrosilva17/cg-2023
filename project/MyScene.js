@@ -41,18 +41,32 @@ export class MyScene extends CGFscene {
 		this.plane = new MyTerrain(this, 30);
 		this.panorama = new MyPanorama(this, this.scenery);
 		this.creature = new MyAnimatedCreature(this);
-		this.torus = new MyNest(this, 10, 10, 4, 1);
-		this.egg = new MyCreatureEgg(this, 0.5);
+		this.nest = new MyNest(this, 10, 20, 2, 0.7);
 		this.eggList = [
-			new MyCreatureEgg(this, 0.5),
-			new MyCreatureEgg(this, 0.5),
-			new MyCreatureEgg(this, 0.5),
-			new MyCreatureEgg(this, 0.5),
+			new MyCreatureEgg(this, true, null),
+			new MyCreatureEgg(this, true, null),
+			new MyCreatureEgg(this, true, null),
+			new MyCreatureEgg(this, true, null),
 		];
 
 		this.setUpdatePeriod(20);
 		this.appStartTime = Date.now();
 		this.animatedObjects = [this.creature];
+		this.pickUp = false;
+		this.animStartTimeSecs = 0;
+		this.startY = 0;
+		this.floor = -97;
+		this.grabMovement = 0;
+		this.grabDuration = 2;
+		this.grabLeniency = 5;
+
+		this.fallingEggs = [];
+
+		this.nestPos = {
+			"x": -15,
+			"y": -98.5,
+			"z": 0
+		}
 
 		//Objects connected to MyInterface
 		this.displayAxis = true;
@@ -87,7 +101,52 @@ export class MyScene extends CGFscene {
 		this.setSpecular(0.2, 0.4, 0.8, 1.0);
 		this.setShininess(10.0);
 	}
-	checkKeys() {
+	eggCollision() {
+		const creaturePos = this.creature.obj.position;
+		for (let i = 0; i < this.eggList.length; i++) {
+			const eggPos = this.eggList[i].position;
+			if (
+				(eggPos["x"] + this.grabLeniency >= creaturePos["x"] && eggPos["x"] - this.grabLeniency <= creaturePos["x"]) &&
+				(eggPos["z"] + this.grabLeniency >= creaturePos["z"] && eggPos["z"] - this.grabLeniency <= creaturePos["z"]) &&
+				(eggPos["y"] + this.grabLeniency >= creaturePos["y"] && eggPos["y"] - this.grabLeniency <= creaturePos["y"]) &&
+				!this.creature.hasEgg()
+			) {
+				console.log("Grabbed egg!");
+				this.creature.grabEgg();
+				this.eggList = this.eggList.filter((egg) => egg != this.eggList[i]);
+			}
+		}
+	}
+	eggDrop(timeSinceAppStart){
+		const creaturePos = this.creature.obj.position;
+		const eggPos = {
+			"x": creaturePos["x"],
+			"y": creaturePos["y"]-2,
+			"z": creaturePos["z"],
+		}		
+		const droppedEgg = new MyCreatureEgg(this, false, eggPos);
+		this.fallingEggs.push({
+			"egg": droppedEgg,
+			"time": timeSinceAppStart,
+			"startY": eggPos["y"],
+			"fallDist": (this.floor - 10) - eggPos["y"]
+		});
+		this.creature.dropEgg();
+	}
+	floorCollision(eggPos) {
+		if (
+			(this.nestPos["x"] + this.grabLeniency >= eggPos["x"] && this.nestPos["x"] - this.grabLeniency <= eggPos["x"]) &&
+			(this.nestPos["z"] + this.grabLeniency >= eggPos["z"] && this.nestPos["z"] - this.grabLeniency <= eggPos["z"]) &&
+			(this.nestPos["y"] + this.grabLeniency >= eggPos["y"] && this.nestPos["y"] - this.grabLeniency <= eggPos["y"])
+		) {
+			console.log("Dropped egg in nest!");
+			this.nest.addEgg(new MyCreatureEgg(this, false, null));
+			return true;
+		} else {
+			return false;
+		}
+	}
+	checkKeys(timeSinceAppStart) {
 		let text = "Keys pressed: ";
 		let keysPressed = false;
 
@@ -121,13 +180,82 @@ export class MyScene extends CGFscene {
 			keysPressed = true;
 		}
 
+		if (this.gui.isKeyPressed("KeyO")) {
+			text += " O ";
+			if (this.creature.hasEgg()) {
+				this.eggDrop(timeSinceAppStart);
+			}
+			keysPressed = true;
+		}
+		
+		if (this.gui.isKeyPressed("KeyP")) {
+			if (!this.pickUp) {
+				text += " P ";
+				this.startY = this.creature.obj.position["y"];
+				this.grabMovement = (this.floor - this.startY)*2;
+				this.pickUp = true;
+				this.animStartTimeSecs = timeSinceAppStart;
+				keysPressed = true;	
+			}
+		}
+
+		if (this.gui.isKeyPressed("Space")) {
+			text += " Space ";
+			this.creature.pitch(0.5);
+			keysPressed = true;
+		}
+
+		if (this.gui.isKeyPressed("ShiftLeft")) {
+			text += " LShift ";
+			this.creature.pitch(-0.5);
+			keysPressed = true;
+		}
+
 		if (keysPressed) console.log(text);
 	}
 	update(t) {
 		let timeSinceAppStart = (t - this.appStartTime) / 1000.0;
 		for (let i = 0; i < this.animatedObjects.length; i++)
 			this.animatedObjects[i].update(timeSinceAppStart);
-		this.checkKeys();
+		this.checkKeys(timeSinceAppStart);
+
+		if (this.pickUp) {
+			let elapsedTimeSecs = timeSinceAppStart-this.animStartTimeSecs;
+			if (elapsedTimeSecs>=0 && elapsedTimeSecs<=this.grabDuration/2) {
+				const newPos = this.startY + elapsedTimeSecs/this.grabDuration * this.grabMovement;
+				this.creature.setY(newPos);
+				this.eggCollision();
+			} else if (elapsedTimeSecs>=0 && elapsedTimeSecs>this.grabDuration/2 && elapsedTimeSecs<=this.grabDuration) {
+				this.creature.setY(this.floor - (elapsedTimeSecs - this.grabDuration/2)/this.grabDuration * this.grabMovement);
+			} else {
+				this.pickUp = false;
+			}
+		}
+
+		if (this.fallingEggs.length != 0) {
+			for (let i = 0; i < this.fallingEggs.length; i++) {
+				if(this.floorCollision(this.fallingEggs[i]["egg"].position)){
+					this.fallingEggs = this.fallingEggs.filter((egg) => egg != this.fallingEggs[i]);
+					break;
+				}
+				if (Math.abs(this.fallingEggs[i]["egg"].position["y"]) >= Math.abs(this.floor)) {
+					console.log(this.fallingEggs[i]["egg"].position["y"]);
+					this.eggList.push(new MyCreatureEgg(this, false, {
+						"x": this.fallingEggs[i]["egg"].position["x"],
+						"y": -99,
+						"z": this.fallingEggs[i]["egg"].position["z"]
+					}))
+					this.fallingEggs = this.fallingEggs.filter((egg) => egg != this.fallingEggs[i]);
+					break;
+				}
+				let elapsedTimeSecs = timeSinceAppStart-this.fallingEggs[i]["time"];
+				
+				if (elapsedTimeSecs>=0 && elapsedTimeSecs<=this.grabDuration) {
+					const newPos = this.fallingEggs[i]["startY"] + elapsedTimeSecs/this.grabDuration * this.fallingEggs[i]["fallDist"];
+					this.fallingEggs[i]["egg"].setY(newPos);
+				}
+			}
+		}
 	}
 
 	display() {
@@ -161,8 +289,14 @@ export class MyScene extends CGFscene {
 		for (let i = 0; i < this.eggList.length; i++) {
 			this.eggList[i].display();
 		}
-		
-		this.torus.display();
+		for (let i = 0; i < this.fallingEggs.length; i++) {
+			this.fallingEggs[i]["egg"].display();
+		}
+		// position the nest on the scene itself
+		this.pushMatrix();
+		this.translate(this.nestPos["x"], this.nestPos["y"], this.nestPos["z"]);
+		this.nest.display();
+		this.popMatrix();
 
 		// ---- END Primitive drawing section
 	}

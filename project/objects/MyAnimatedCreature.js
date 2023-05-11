@@ -1,5 +1,6 @@
 import { MyAnimatedObject } from "./MyAnimatedObject.js";
 import { MyCreature } from "./MyCreature.js";
+import { MyCreatureEgg } from "./MyCreatureEgg.js";
 export class MyAnimatedCreature extends MyAnimatedObject {
 	constructor(scene) {
 		let kuriboh = new MyCreature(scene);
@@ -20,10 +21,16 @@ export class MyAnimatedCreature extends MyAnimatedObject {
 	accelerate(v) {
 		this.obj.velocity += v * this.scene.speedFactor;
 		if (this.obj.velocity < 0) this.obj.velocity = 0;
+		if (this.obj.velocity >= 1) this.obj.velocity = 1;
 	}
 
 	turn(a) {
 		this.obj.yAngle += a * this.scene.speedFactor * Math.min(Math.max(1, this.obj.velocity * 2), 3.5);
+		if (this.obj.yAngle >= 2* Math.PI) this.obj.yAngle = 0;
+	}
+
+	pitch(p) {
+		this.obj.position["y"] += p;
 	}
 
 	reset() {
@@ -42,6 +49,22 @@ export class MyAnimatedCreature extends MyAnimatedObject {
 		if (t >= 0) {
 			this.obj.wingAngle = Math.min(4, 1 + this.obj.velocity * 10) * this.scene.speedFactor * this.sinWave(Math.PI * t, 0.1);
 		}
+	}
+
+	setY(y) {
+		this.obj.position["y"] = y;
+	}
+
+	grabEgg() {
+		this.obj.egg = new MyCreatureEgg(this.scene, false, null);
+	}
+	
+	dropEgg() {
+		this.obj.egg = null;
+	}
+
+	hasEgg() {
+		return this.obj.egg ? true : false;
 	}
 
 	display() {

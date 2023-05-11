@@ -2,13 +2,18 @@ import { CGFappearance, CGFobject, CGFtexture } from "../../lib/CGF.js";
 import { MySphere } from "../primitives/MySphere.js";
 
 export class MyCreatureEgg extends CGFobject {
-	constructor(scene, size) {
+	constructor(scene, randomize, position) {
 		super(scene);
 		this.eggTop = new MySphere(scene, 20, 20, false, 0.5, 0.5);
 		this.eggBottom = new MySphere(scene, 20, 20, false, 0.5, 0.5);
         this.angleScale = Math.random() * 2 - 1;
-        this.position = {"x": Math.random() * (60 + 33) - 33, "z": Math.random() * (33 + 70) - 70};
-
+		if (randomize) {
+			this.position = {"x": Math.random() * (60 + 33) - 33,"y": -99, "z": Math.random() * (33 + 70) - 70};
+		} else if (position) {
+			this.position = position;
+		} else {
+			this.position = {"x": 0, "y": 0, "z": 0};
+		}
 		this.eggTexture = new CGFtexture(this.scene, "./images/egg.jpg");
 
 		this.eggAppearance = new CGFappearance(this.scene);
@@ -18,10 +23,14 @@ export class MyCreatureEgg extends CGFobject {
 		this.eggAppearance.setTextureWrap("MIRRORED_REPEAT", "MIRRORED_REPEAT");
 	}
 
+	setY(y) {
+		this.position["y"] = y;
+	}
+
 	display() {
 		this.eggAppearance.apply();
 		this.scene.pushMatrix();
-		this.scene.translate(this.position["x"], -99, this.position["z"]);
+		this.scene.translate(this.position["x"], this.position["y"], this.position["z"]);
         this.scene.rotate(Math.PI / 16, this.angleScale, 0, this.angleScale);
         this.scene.pushMatrix();
         this.scene.scale(1, 2, 1);
