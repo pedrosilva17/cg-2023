@@ -11,6 +11,9 @@ import { MyAnimatedCreature } from "./objects/MyAnimatedCreature.js";
 import { MyTerrain } from "./objects/MyTerrain.js";
 import { MyNest } from "./objects/MyNest.js";
 import { MyCreatureEgg } from "./objects/MyCreatureEgg.js";
+import { MyTreeGroupPatch } from "./objects/MyTreeGroupPatch.js";
+import { MyTreeRowPatch } from "./objects/MyTreeRowPatch.js";
+import { MyBillboard } from "./objects/MyBillboard.js";
 
 /**
  * MyScene
@@ -42,6 +45,9 @@ export class MyScene extends CGFscene {
 		this.panorama = new MyPanorama(this, this.scenery);
 		this.creature = new MyAnimatedCreature(this);
 		this.nest = new MyNest(this, 10, 20, 2, 0.7);
+		this.billboard = new MyBillboard(this,{"x": -20, "y": -95, "z":0},new CGFtexture(this, "./images/billboardtree.png"), 7)
+		this.treePatch = new MyTreeGroupPatch(this, {"x": -10, "y": -95, "z": -30}, 7);
+		this.treeLine = new MyTreeRowPatch(this, {"x": 20, "y": -95, "z": -30}, 10);
 		this.eggList = [
 			new MyCreatureEgg(this, true, null),
 			new MyCreatureEgg(this, true, null),
@@ -88,7 +94,7 @@ export class MyScene extends CGFscene {
 	}
 	initCameras() {
 		this.camera = new CGFcamera(
-			1.0,
+			90.0,
 			0.1,
 			1000,
 			vec3.fromValues(5, -95, 5),
@@ -298,6 +304,8 @@ export class MyScene extends CGFscene {
 		this.nest.display();
 		this.popMatrix();
 
+		this.treePatch.display()
+		this.treeLine.display()
 		// ---- END Primitive drawing section
 	}
 }
