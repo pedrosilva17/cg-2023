@@ -26,7 +26,7 @@ export class MyAnimatedCreature extends MyAnimatedObject {
 
 	turn(a) {
 		this.obj.yAngle += a * this.scene.speedFactor * Math.min(Math.max(1, this.obj.velocity * 2), 3.5);
-		if (this.obj.yAngle >= 2* Math.PI) this.obj.yAngle = 0;
+		if (this.obj.yAngle >= 2* Math.PI || this.obj.yAngle <= -2*Math.PI) this.obj.yAngle = 0;
 	}
 
 	pitch(p) {
@@ -65,6 +65,10 @@ export class MyAnimatedCreature extends MyAnimatedObject {
 
 	hasEgg() {
 		return this.obj.egg ? true : false;
+	}
+
+	getRotationAngle() {
+		return this.obj.yAngle;
 	}
 
 	display() {

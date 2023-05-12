@@ -125,17 +125,21 @@ export class MyScene extends CGFscene {
 	}
 	eggDrop(timeSinceAppStart){
 		const creaturePos = this.creature.obj.position;
+		const rotation = this.creature.getRotationAngle();
 		const eggPos = {
-			"x": creaturePos["x"],
-			"y": creaturePos["y"]-2,
-			"z": creaturePos["z"],
+			"x": creaturePos["x"] + Math.cos(-rotation) * 2,
+			"y": creaturePos["y"],
+			"z": creaturePos["z"] + Math.sin(-rotation) * 2,
 		}		
 		const droppedEgg = new MyCreatureEgg(this, false, eggPos);
 		this.fallingEggs.push({
 			"egg": droppedEgg,
 			"time": timeSinceAppStart,
 			"startY": eggPos["y"],
-			"fallDist": (this.floor - 10) - eggPos["y"]
+			"fallDist": (this.floor - 10) - eggPos["y"],
+			"velocity": 0.2,
+			"yAngle": rotation,
+			"peak": false
 		});
 		this.creature.dropEgg();
 	}
@@ -151,6 +155,22 @@ export class MyScene extends CGFscene {
 		} else {
 			return false;
 		}
+	}
+	animateFallingEgg(egg, timeSinceAppStart) {
+			const elapsedTimeSecs = timeSinceAppStart-egg["time"];
+			const fallEq = (-1/5 * (2*elapsedTimeSecs ** 2) + (0 * elapsedTimeSecs) + 0) * this.speedFactor;
+
+			if (egg["velocity"] > 0) {
+				egg["egg"].position["x"] += egg["velocity"] * Math.cos(egg["yAngle"]);
+				egg["egg"].position["z"] -= egg["velocity"] * Math.sin(egg["yAngle"]);	
+				egg["egg"].position["y"] += egg["velocity"];
+			} else {
+				egg["egg"].position["x"] -= egg["velocity"] * Math.cos(egg["yAngle"]);
+				egg["egg"].position["z"] += egg["velocity"] * Math.sin(egg["yAngle"]);
+				egg["egg"].position["y"] += egg["velocity"] * 0.8;
+
+			}
+			egg["velocity"] = egg["velocity"] >= -0.8 && egg["velocity"] <= 0  ? -0.8 : egg["velocity"] + fallEq;
 	}
 	checkKeys(timeSinceAppStart) {
 		let text = "Keys pressed: ";
@@ -240,12 +260,14 @@ export class MyScene extends CGFscene {
 
 		if (this.fallingEggs.length != 0) {
 			for (let i = 0; i < this.fallingEggs.length; i++) {
+				// if egg hit the floor (true when hits the nest false when it doesnt)
 				if(this.floorCollision(this.fallingEggs[i]["egg"].position)){
 					this.fallingEggs = this.fallingEggs.filter((egg) => egg != this.fallingEggs[i]);
 					break;
 				}
+				
+				// if it hit the floor previously aka the egg's height is >= the height of the floor (abs)
 				if (Math.abs(this.fallingEggs[i]["egg"].position["y"]) >= Math.abs(this.floor)) {
-					console.log(this.fallingEggs[i]["egg"].position["y"]);
 					this.eggList.push(new MyCreatureEgg(this, false, {
 						"x": this.fallingEggs[i]["egg"].position["x"],
 						"y": -99,
@@ -254,12 +276,18 @@ export class MyScene extends CGFscene {
 					this.fallingEggs = this.fallingEggs.filter((egg) => egg != this.fallingEggs[i]);
 					break;
 				}
-				let elapsedTimeSecs = timeSinceAppStart-this.fallingEggs[i]["time"];
+
+				this.animateFallingEgg(this.fallingEggs[i], timeSinceAppStart);
+				
+				/*
+				// falling animation
 				
 				if (elapsedTimeSecs>=0 && elapsedTimeSecs<=this.grabDuration) {
 					const newPos = this.fallingEggs[i]["startY"] + elapsedTimeSecs/this.grabDuration * this.fallingEggs[i]["fallDist"];
 					this.fallingEggs[i]["egg"].setY(newPos);
 				}
+				*/
+
 			}
 		}
 	}
