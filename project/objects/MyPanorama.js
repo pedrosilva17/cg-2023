@@ -10,7 +10,7 @@ export class MyPanorama extends CGFobject {
 	constructor(scene, texture) {
 		super(scene);
         this.texture = texture;
-        this.sphere = new MySphere(scene, 90, 180, true, 200);
+        this.sphere = new MySphere(scene, 90, 180, true, 400);
 		this.appearance = new CGFappearance(scene);
 	}
 	

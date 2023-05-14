@@ -9,6 +9,7 @@ import {
 import { MyPanorama } from "./objects/MyPanorama.js";
 import { MyAnimatedCreature } from "./objects/MyAnimatedCreature.js";
 import { MyTerrain } from "./objects/MyTerrain.js";
+import { MyWater } from "./objects/MyWater.js";
 import { MyNest } from "./objects/MyNest.js";
 import { MyCreatureEgg } from "./objects/MyCreatureEgg.js";
 import { MyTreeGroupPatch } from "./objects/MyTreeGroupPatch.js";
@@ -37,10 +38,11 @@ export class MyScene extends CGFscene {
 		this.gl.enable(this.gl.CULL_FACE);
 		this.gl.depthFunc(this.gl.LEQUAL);
 
-		this.scenery = new CGFtexture(this, "images/panorama4.jpg");
+		this.scenery = new CGFtexture(this, "images/panorama3.jpeg");
 
 		//Initialize scene objects
 		this.axis = new CGFaxis(this);
+		this.water = new MyWater(this, 30);
 		this.plane = new MyTerrain(this, 30);
 		this.panorama = new MyPanorama(this, this.scenery);
 		this.creature = new MyAnimatedCreature(this);
@@ -62,9 +64,15 @@ export class MyScene extends CGFscene {
 		this.animStartTimeSecs = 0;
 		this.startY = 0;
 		this.floor = -97;
+
 		this.grabMovement = 0;
 		this.grabDuration = 2;
 		this.grabLeniency = 5;
+
+		this.initialVx = 0.5;
+		this.initialVy = 0.5;
+		this.tAngle = Math.PI/4;
+		this.gravity = 0.5;
 
 		this.fallingEggs = [];
 
@@ -78,10 +86,11 @@ export class MyScene extends CGFscene {
 		this.displayAxis = true;
 		this.scaleFactor = 1;
 		this.speedFactor = 1;
+		this.followCamera = false;
 
 		this.enableTextures(true);
 
-		this.texture = new CGFtexture(this, "images/terrain.jpg");
+		this.texture = new CGFtexture(this, "images/terrain2.jpg");
 		this.appearance = new CGFappearance(this);
 		this.appearance.setTexture(this.texture);
 		this.appearance.setTextureWrap("REPEAT", "REPEAT");
@@ -137,7 +146,6 @@ export class MyScene extends CGFscene {
 			"time": timeSinceAppStart,
 			"startY": eggPos["y"],
 			"fallDist": (this.floor - 10) - eggPos["y"],
-			"velocity": 0.2,
 			"yAngle": rotation,
 			"peak": false
 		});
@@ -158,19 +166,10 @@ export class MyScene extends CGFscene {
 	}
 	animateFallingEgg(egg, timeSinceAppStart) {
 			const elapsedTimeSecs = timeSinceAppStart-egg["time"];
-			const fallEq = (-1/5 * (2*elapsedTimeSecs ** 2) + (0 * elapsedTimeSecs) + 0) * this.speedFactor;
 
-			if (egg["velocity"] > 0) {
-				egg["egg"].position["x"] += egg["velocity"] * Math.cos(egg["yAngle"]);
-				egg["egg"].position["z"] -= egg["velocity"] * Math.sin(egg["yAngle"]);	
-				egg["egg"].position["y"] += egg["velocity"];
-			} else {
-				egg["egg"].position["x"] -= egg["velocity"] * Math.cos(egg["yAngle"]);
-				egg["egg"].position["z"] += egg["velocity"] * Math.sin(egg["yAngle"]);
-				egg["egg"].position["y"] += egg["velocity"] * 0.8;
-
-			}
-			egg["velocity"] = egg["velocity"] >= -0.8 && egg["velocity"] <= 0  ? -0.8 : egg["velocity"] + fallEq;
+			egg["egg"].position["x"] += this.initialVx * Math.cos(this.tAngle) * elapsedTimeSecs * Math.cos(egg["yAngle"]);
+			egg["egg"].position["z"] -= this.initialVx * Math.cos(this.tAngle) * elapsedTimeSecs * Math.sin(egg["yAngle"]);	
+			egg["egg"].position["y"] += this.initialVy * Math.sin(this.tAngle) * elapsedTimeSecs - 0.5 * this.gravity * elapsedTimeSecs**2;
 	}
 	checkKeys(timeSinceAppStart) {
 		let text = "Keys pressed: ";
@@ -278,18 +277,19 @@ export class MyScene extends CGFscene {
 				}
 
 				this.animateFallingEgg(this.fallingEggs[i], timeSinceAppStart);
-				
-				/*
-				// falling animation
-				
-				if (elapsedTimeSecs>=0 && elapsedTimeSecs<=this.grabDuration) {
-					const newPos = this.fallingEggs[i]["startY"] + elapsedTimeSecs/this.grabDuration * this.fallingEggs[i]["fallDist"];
-					this.fallingEggs[i]["egg"].setY(newPos);
-				}
-				*/
-
 			}
 		}
+
+		if (this.followCamera) {
+			const creaturePos = this.creature.getPosition();
+			const target = vec4.fromValues(creaturePos["x"], creaturePos["y"], creaturePos["z"], 0);
+			const rotation = this.creature.getRotationAngle();
+			const cameraPos = vec4.fromValues(creaturePos["x"] - 10 * Math.cos(rotation), creaturePos["y"] + 5, creaturePos["z"] + 10* Math.sin(rotation), 0);
+			this.camera.setPosition(cameraPos);
+			this.camera.setTarget(target);
+		}
+
+		this.water.update(timeSinceAppStart);
 	}
 
 	display() {
@@ -308,6 +308,15 @@ export class MyScene extends CGFscene {
 
 		// ---- BEGIN Primitive drawing section
 
+		// this.pushMatrix();
+		// this.appearance.apply();
+		// this.translate(0, -70, 0);
+		// this.scale(400, 400, 400);
+		// this.rotate(-Math.PI / 2.0, 1, 0, 0);
+		// this.water.display();
+		// this.popMatrix();
+		// this.setDefaultAppearance();
+
 		this.pushMatrix();
 		this.appearance.apply();
 		this.translate(0, -100, 0);
@@ -317,6 +326,10 @@ export class MyScene extends CGFscene {
 		this.popMatrix();
 		this.setDefaultAppearance();
 
+
+		// this.pushMatrix();
+		// this.translate(this.camera.position[0], this.camera.position[1], this.camera.position[2])
+		// this.popMatrix();
 		this.panorama.display();
 
 		this.creature.display();

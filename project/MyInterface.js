@@ -16,13 +16,31 @@ export class MyInterface extends CGFinterface {
 		// init GUI. For more information on the methods, check:
 		// https://github.com/dataarts/dat.gui/blob/master/API.md
 		this.gui = new dat.GUI();
-
-		//Checkbox element in GUI
+		
 		this.gui.add(this.scene, "displayAxis").name("Display Axis");
+		
+		// Camera controls
+		const camera = this.gui.addFolder("Camera");
 
-		//Slider element in GUI
-		this.gui.add(this.scene, "scaleFactor", 0.5, 3).name("Scale Factor");
-		this.gui.add(this.scene, "speedFactor", 0.1, 3).name("Speed Factor");
+		camera.add(this.scene, "followCamera").name("Follow Camera");
+
+		// Grab
+		const grab = this.gui.addFolder("Grab");
+		grab.add(this.scene, "grabLeniency", 0, 10).name("Grab Leniency");
+		grab.add(this.scene, "grabDuration", 0, 10).name("Grab Duration");
+
+		// Throw
+		const eggThrow = this.gui.addFolder("Throw");
+		eggThrow.add(this.scene, "initialVx", 0, 5).name("Initial Vx");
+		eggThrow.add(this.scene, "initialVy", 0, 5).name("Initial Vy");
+		eggThrow.add(this.scene, "tAngle", 0, Math.PI/2).name("Throw Angle");
+		eggThrow.add(this.scene, "gravity", 0, 10).name("Gravity");
+
+		// Factors
+		const constFactors = this.gui.addFolder("Constant Factors");
+
+		constFactors.add(this.scene, "scaleFactor", 0.5, 3).name("Scale Factor");
+		constFactors.add(this.scene, "speedFactor", 0.1, 3).name("Speed Factor");
 
 		this.initKeys();
         

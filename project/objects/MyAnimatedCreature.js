@@ -71,6 +71,10 @@ export class MyAnimatedCreature extends MyAnimatedObject {
 		return this.obj.yAngle;
 	}
 
+	getPosition() {
+		return this.obj.position;
+	}
+
 	display() {
 		this.scene.pushMatrix();
 		this.scene.translate(0, this.animPos, 0);
