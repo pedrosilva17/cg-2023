@@ -7,7 +7,7 @@ export class MyWater extends CGFobject {
         this.plane = new MyPlane(scene, nrDivs);
 
         this.waterTexture = new CGFtexture(this.scene, "./images/waterTex.jpg");
-        this.waterMap = new CGFtexture(this.scene, "./images/waterMap.jpg");
+        this.waterMap = new CGFtexture(this.scene, "./images/waterMap2.jpg");
 
         this.waterAppearance = new CGFappearance(this.scene);
         this.waterAppearance.setSpecular(0, 0, 0, 0);
@@ -18,8 +18,7 @@ export class MyWater extends CGFobject {
 
         this.waterShader = new CGFshader(this.scene.gl, "./shaders/MyWater.vert", "./shaders/MyWater.frag");
         this.waterShader.setUniformsValues({ timeFactor: 0 });
-        this.waterShader.setUniformsValues({ uSampler2: 1 });
-        this.waterMap.bind(1);
+        this.waterShader.setUniformsValues({ uSampler2: 3 });
 
         this.defaultShader = this.scene.defaultShader;
     }
@@ -29,9 +28,11 @@ export class MyWater extends CGFobject {
     }
 
     display() {
+        this.waterMap.bind(3);
         this.scene.setActiveShader(this.waterShader);
         this.waterAppearance.apply();
         this.plane.display();
+        this.waterMap.unbind(3);
         this.scene.setActiveShader(this.defaultShader);
     }
 }

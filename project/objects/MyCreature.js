@@ -12,7 +12,7 @@ import { MyLimb } from "./MyLimb.js";
  * @param scene - Reference to MyScene object
  */
 export class MyCreature extends CGFobject {
-	constructor(scene) {
+	constructor(scene, position) {
 		super(scene);
 		this.bodyTexture = new CGFtexture(scene, "images/fur.jpg");
 		this.wingTexture = new CGFtexture(scene, "images/feathers.avif");
@@ -26,7 +26,8 @@ export class MyCreature extends CGFobject {
 		this.yAngle = 0;
 		this.velocity = 0;
 		this.pitch = 0;
-		this.position = {"x": 0, "y": -80, "z": 0};
+		this.position = position == undefined ? {"x": 50, "y": -30, "z": 20} :
+		{"x": position[0], "y": position[1], "z": position[2]};
 
 		this.defaultAppearance = new CGFappearance(scene);
 		this.defaultAppearance.setSpecular(0, 0, 0, 0);

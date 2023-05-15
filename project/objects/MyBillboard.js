@@ -38,6 +38,7 @@ export class MyBillboard extends CGFobject {
         this.scene.rotate(Math.PI/2, 1, 0, 0);
         this.scene.rotate(Math.PI/2, 0, 0, 1);
         this.scene.scale(this.scale, this.scale, this.scale);
+        this.scene.translate(0, 0, -0.5);
         this.billboard.display();
         this.scene.popMatrix();
     }

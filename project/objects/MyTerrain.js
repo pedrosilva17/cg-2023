@@ -19,12 +19,12 @@ export class MyTerrain extends CGFobject {
 
         this.terrainShader = new CGFshader(this.scene.gl, "./shaders/MyTerrain.vert", "./shaders/MyTerrain.frag");
         this.terrainShader.setUniformsValues({ uSampler2: 1, uSampler3: 2});
-        this.heightMap.bind(1);
-        this.altimetry.bind(2);
         this.defaultShader = this.scene.defaultShader;
     }
 
     display() {
+        this.heightMap.bind(1);
+        this.altimetry.bind(2);
         this.scene.setActiveShader(this.terrainShader);
         this.terrainAppearance.apply();
         this.plane.display();

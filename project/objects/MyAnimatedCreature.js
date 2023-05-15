@@ -2,8 +2,8 @@ import { MyAnimatedObject } from "./MyAnimatedObject.js";
 import { MyCreature } from "./MyCreature.js";
 import { MyCreatureEgg } from "./MyCreatureEgg.js";
 export class MyAnimatedCreature extends MyAnimatedObject {
-	constructor(scene) {
-		let kuriboh = new MyCreature(scene);
+	constructor(scene, position) {
+		let kuriboh = new MyCreature(scene, position);
 		super(scene, kuriboh);
 	}
 

@@ -26,6 +26,8 @@ export class MyScene extends CGFscene {
 	}
 	init(application) {
 		super.init(application);
+		
+		this.floor = -55;
 
 		this.initCameras();
 		this.initLights();
@@ -47,9 +49,8 @@ export class MyScene extends CGFscene {
 		this.panorama = new MyPanorama(this, this.scenery);
 		this.creature = new MyAnimatedCreature(this);
 		this.nest = new MyNest(this, 10, 20, 2, 0.7);
-		this.billboard = new MyBillboard(this,{"x": -20, "y": -95, "z":0},new CGFtexture(this, "./images/billboardtree.png"), 7)
-		this.treePatch = new MyTreeGroupPatch(this, {"x": -10, "y": -95, "z": -30}, 7);
-		this.treeLine = new MyTreeRowPatch(this, {"x": 20, "y": -95, "z": -30}, 10);
+		this.treePatch = new MyTreeGroupPatch(this, {"x": 100, "y": this.floor, "z": -10}, 7);
+		this.treeLine = new MyTreeRowPatch(this, {"x": 100, "y": this.floor, "z": -30}, 10);
 		this.eggList = [
 			new MyCreatureEgg(this, true, null),
 			new MyCreatureEgg(this, true, null),
@@ -63,7 +64,6 @@ export class MyScene extends CGFscene {
 		this.pickUp = false;
 		this.animStartTimeSecs = 0;
 		this.startY = 0;
-		this.floor = -97;
 
 		this.grabMovement = 0;
 		this.grabDuration = 2;
@@ -77,9 +77,9 @@ export class MyScene extends CGFscene {
 		this.fallingEggs = [];
 
 		this.nestPos = {
-			"x": -15,
-			"y": -98.5,
-			"z": 0
+			"x": 110,
+			"y": this.floor+2,
+			"z": 10
 		}
 
 		//Objects connected to MyInterface
@@ -106,8 +106,8 @@ export class MyScene extends CGFscene {
 			90.0,
 			0.1,
 			1000,
-			vec3.fromValues(5, -95, 5),
-			vec3.fromValues(0, -95, 0)
+			vec3.fromValues(40, this.floor + 50, 30),
+			vec3.fromValues(90, this.floor + 20, 50)
 		);
 	}
 	setDefaultAppearance() {
@@ -217,7 +217,7 @@ export class MyScene extends CGFscene {
 			if (!this.pickUp) {
 				text += " P ";
 				this.startY = this.creature.obj.position["y"];
-				this.grabMovement = (this.floor - this.startY)*2;
+				this.grabMovement = (this.floor + 3 - this.startY)*2;
 				this.pickUp = true;
 				this.animStartTimeSecs = timeSinceAppStart;
 				keysPressed = true;	
@@ -251,7 +251,7 @@ export class MyScene extends CGFscene {
 				this.creature.setY(newPos);
 				this.eggCollision();
 			} else if (elapsedTimeSecs>=0 && elapsedTimeSecs>this.grabDuration/2 && elapsedTimeSecs<=this.grabDuration) {
-				this.creature.setY(this.floor - (elapsedTimeSecs - this.grabDuration/2)/this.grabDuration * this.grabMovement);
+				this.creature.setY((this.floor + 3) - (elapsedTimeSecs - this.grabDuration/2)/this.grabDuration * this.grabMovement);
 			} else {
 				this.pickUp = false;
 			}
@@ -308,14 +308,14 @@ export class MyScene extends CGFscene {
 
 		// ---- BEGIN Primitive drawing section
 
-		// this.pushMatrix();
-		// this.appearance.apply();
-		// this.translate(0, -70, 0);
-		// this.scale(400, 400, 400);
-		// this.rotate(-Math.PI / 2.0, 1, 0, 0);
-		// this.water.display();
-		// this.popMatrix();
-		// this.setDefaultAppearance();
+		this.pushMatrix();
+		this.appearance.apply();
+		this.translate(0, -85, 0);
+		this.scale(400, 400, 400);
+		this.rotate(-Math.PI / 2.0, 1, 0, 0);
+		this.water.display();
+		this.popMatrix();
+		this.setDefaultAppearance();
 
 		this.pushMatrix();
 		this.appearance.apply();
@@ -327,10 +327,10 @@ export class MyScene extends CGFscene {
 		this.setDefaultAppearance();
 
 
-		// this.pushMatrix();
-		// this.translate(this.camera.position[0], this.camera.position[1], this.camera.position[2])
-		// this.popMatrix();
+		this.pushMatrix();
+		this.translate(this.camera.position[0], this.camera.position[1], this.camera.position[2])
 		this.panorama.display();
+		this.popMatrix();
 
 		this.creature.display();
 		for (let i = 0; i < this.eggList.length; i++) {
