@@ -22,7 +22,7 @@ export class MyInterface extends CGFinterface {
 		// Camera controls
 		const camera = this.gui.addFolder("Camera");
 
-		camera.add(this.scene, "followCamera").name("Follow Camera");
+		this.cameraCheckbox = camera.add(this.scene, "followCamera").name("Follow Camera").__checkbox;
 
 		// Grab
 		const grab = this.gui.addFolder("Grab");

@@ -16,6 +16,7 @@ export class MyAnimatedCreature extends MyAnimatedObject {
 		this.obj.position["x"] += 1 * this.obj.velocity * Math.cos(this.obj.yAngle);
 		this.obj.position["z"] -= 1 * this.obj.velocity * Math.sin(this.obj.yAngle);
 		this.obj.velocity = this.obj.velocity <= 0 ? 0 : this.obj.velocity - 0.004 * this.scene.speedFactor;
+		this.obj.tiltAngle = this.obj.tiltAngle < 0 ? Math.min(this.obj.tiltAngle + 0.03, 0) : this.obj.tiltAngle > 0 ? Math.max(this.obj.tiltAngle - 0.03, 0) : 0;
 	}
 
 	accelerate(v) {
@@ -26,7 +27,11 @@ export class MyAnimatedCreature extends MyAnimatedObject {
 
 	turn(a) {
 		this.obj.yAngle += a * this.scene.speedFactor * Math.min(Math.max(1, this.obj.velocity * 2), 3.5);
-		if (this.obj.yAngle >= 2* Math.PI || this.obj.yAngle <= -2*Math.PI) this.obj.yAngle = 0;
+		if (a > 0) 
+			this.obj.tiltAngle = Math.max(this.obj.tiltAngle - a * this.scene.speedFactor, (- Math.PI / 6) * this.scene.speedFactor)
+		else 
+			this.obj.tiltAngle = Math.min(this.obj.tiltAngle - a * this.scene.speedFactor, (Math.PI / 6) * this.scene.speedFactor)
+		if (this.obj.yAngle >= 2 * Math.PI || this.obj.yAngle <= -2 * Math.PI) this.obj.yAngle = 0;
 	}
 
 	pitch(p) {
@@ -34,7 +39,7 @@ export class MyAnimatedCreature extends MyAnimatedObject {
 	}
 
 	reset() {
-		this.obj.position = {"x": 0, "y": -95, "z": 0};
+		this.obj.position = {"x": 50, "y": -30, "z": 20};
 		this.obj.yAngle = 0;
 		this.obj.velocity = 0;
 	}
@@ -42,12 +47,13 @@ export class MyAnimatedCreature extends MyAnimatedObject {
 	idleAnimation(t) {
 		if (t >= 0) {
 			this.animPos = this.sinWave(Math.PI * t, 0.2);
+			this.obj.feetAngle = this.sinWave(Math.PI / 2 * t, 0.2);
 		}
 	}
 
 	wingBeat(t) {
 		if (t >= 0) {
-			this.obj.wingAngle = Math.min(4, 1 + this.obj.velocity * 10) * this.scene.speedFactor * this.sinWave(Math.PI * t, 0.1);
+			this.obj.wingAngle = Math.min(2, 1 + this.obj.velocity * 10) * this.scene.speedFactor * this.sinWave(Math.PI * t, 0.1);
 		}
 	}
 

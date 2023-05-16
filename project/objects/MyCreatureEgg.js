@@ -8,7 +8,7 @@ export class MyCreatureEgg extends CGFobject {
 		this.eggBottom = new MySphere(scene, 20, 20, false, 0.5, 0.5);
         this.angleScale = Math.random() * 2 - 1;
 		if (randomize) {
-			this.position = {"x": Math.random() * (90 + 53) - 53,"y": -49, "z": Math.random() * (33 + 70) - 70};
+			this.position = {"x": Math.random() * (90 + 70) - 70, "y": this.scene.floor, "z": Math.random() * (33 + 70) - 70};
 		} else if (position) {
 			this.position = position;
 		} else {

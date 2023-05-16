@@ -24,6 +24,8 @@ export class MyCreature extends CGFobject {
 		this.egg = null;
 		this.wingAngle = 0;
 		this.yAngle = 0;
+		this.tiltAngle = 0;
+		this.feetAngle = 0;
 		this.velocity = 0;
 		this.pitch = 0;
 		this.position = position == undefined ? {"x": 50, "y": -30, "z": 20} :
@@ -94,6 +96,7 @@ export class MyCreature extends CGFobject {
 		this.scene.translate(0, -1, 0.6 * sideIndex);
 		this.scene.rotate(Math.PI / 16, 1 * sideIndex, 0, 0);
 		this.scene.rotate(Math.PI / 3, 0, 0, -1);
+		this.scene.rotate(this.feetAngle * sideIndex, 0, 0, 1);
 		this.limb.display();
 		this.scene.popMatrix();
 	}
@@ -103,6 +106,7 @@ export class MyCreature extends CGFobject {
 		this.scene.translate(this.position["x"], this.position["y"], this.position["z"]);
 		this.scene.scale(this.scene.scaleFactor, this.scene.scaleFactor, this.scene.scaleFactor);
 		this.scene.rotate(this.yAngle, 0, 1, 0);
+		this.scene.rotate(this.tiltAngle, 1, 0, 0);
 		this.displayBody();
 		this.displayEyes();
 		this.displayLimbs();

@@ -87,6 +87,7 @@ export class MyScene extends CGFscene {
 		this.scaleFactor = 1;
 		this.speedFactor = 1;
 		this.followCamera = false;
+		this.cameraToggle = false;
 
 		this.enableTextures(true);
 
@@ -223,6 +224,11 @@ export class MyScene extends CGFscene {
 				keysPressed = true;	
 			}
 		}
+		if (this.gui.isKeyPressed("KeyF") && !this.cameraToggle) {
+			this.followCamera ? this.followCamera = false : this.followCamera = true;
+			keysPressed = true;
+			this.gui.cameraCheckbox.click();
+		}
 
 		if (this.gui.isKeyPressed("Space")) {
 			text += " Space ";
@@ -237,6 +243,7 @@ export class MyScene extends CGFscene {
 		}
 
 		if (keysPressed) console.log(text);
+		this.cameraToggle = this.gui.isKeyPressed("KeyF");
 	}
 	update(t) {
 		let timeSinceAppStart = (t - this.appStartTime) / 1000.0;
@@ -269,7 +276,7 @@ export class MyScene extends CGFscene {
 				if (Math.abs(this.fallingEggs[i]["egg"].position["y"]) >= Math.abs(this.floor)) {
 					this.eggList.push(new MyCreatureEgg(this, false, {
 						"x": this.fallingEggs[i]["egg"].position["x"],
-						"y": -99,
+						"y": this.floor,
 						"z": this.fallingEggs[i]["egg"].position["z"]
 					}))
 					this.fallingEggs = this.fallingEggs.filter((egg) => egg != this.fallingEggs[i]);
@@ -282,9 +289,9 @@ export class MyScene extends CGFscene {
 
 		if (this.followCamera) {
 			const creaturePos = this.creature.getPosition();
-			const target = vec4.fromValues(creaturePos["x"], creaturePos["y"], creaturePos["z"], 0);
+			const target = vec4.fromValues(creaturePos["x"], creaturePos["y"] - 10, creaturePos["z"], 0);
 			const rotation = this.creature.getRotationAngle();
-			const cameraPos = vec4.fromValues(creaturePos["x"] - 10 * Math.cos(rotation), creaturePos["y"] + 5, creaturePos["z"] + 10* Math.sin(rotation), 0);
+			const cameraPos = vec4.fromValues(creaturePos["x"] - 10 * Math.cos(rotation), creaturePos["y"], creaturePos["z"] + 10* Math.sin(rotation), 0);
 			this.camera.setPosition(cameraPos);
 			this.camera.setTarget(target);
 		}
