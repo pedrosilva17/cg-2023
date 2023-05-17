@@ -50,8 +50,11 @@ export class MyScene extends CGFscene {
 		this.panorama = new MyPanorama(this, this.scenery);
 		this.creature = new MyAnimatedCreature(this);
 		this.nest = new MyNest(this, 10, 20, 2, 0.7);
-		this.treePatch = new MyTreeGroupPatch(this, {"x": 100, "y": this.floor, "z": -10}, 7);
-		this.treeLine = new MyTreeRowPatch(this, {"x": 100, "y": this.floor, "z": -30}, 10);
+		this.treePatch1 = new MyTreeGroupPatch(this, {"x": 100, "y": this.floor + 1, "z": -10}, 7);
+		this.treePatch2 = new MyTreeGroupPatch(this, {"x": 90, "y": this.floor + 1, "z": 20}, 7);
+		this.treePatch3 = new MyTreeGroupPatch(this, {"x": 70, "y": this.floor + 1, "z": 30}, 7);
+		this.treeLine1 = new MyTreeRowPatch(this, {"x": 50, "y": this.floor + 1, "z": 30}, 10);
+		this.treeLine2 = new MyTreeRowPatch(this, {"x": 100, "y": this.floor + 1, "z": -30}, 10);
 		this.numberOfEggs = 4;
 		this.eggList = [];
 
@@ -356,8 +359,11 @@ export class MyScene extends CGFscene {
 		this.nest.display();
 		this.popMatrix();
 
-		this.treePatch.display()
-		this.treeLine.display()
+		this.treePatch1.display();
+		this.treePatch2.display();
+		this.treePatch3.display();
+		this.treeLine1.display()
+		this.treeLine2.display()
 		// ---- END Primitive drawing section
 	}
 }

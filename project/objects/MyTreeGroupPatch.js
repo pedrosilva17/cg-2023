@@ -22,9 +22,9 @@ export class MyTreeGroupPatch extends CGFobject {
         for (let i = 0; i < 9; i++) {
             let col = i%3 - 1;
 
-            const x = this.position["x"] + col * this.offset + Math.random() * 2;
+            const x = this.position["x"] + col * this.offset + Math.random() * 3;
             const y = this.position["y"];
-            const z = this.position["z"] + row * this.offset + Math.random() * 2;
+            const z = this.position["z"] + row * this.offset + Math.random() * 5;
             const treePosition = {
                 "x": x, "y": y, "z": z
             } 

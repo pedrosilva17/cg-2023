@@ -23,7 +23,7 @@ export class MyBillboard extends CGFobject {
     
     display() {
         const billboardVec = vec3.fromValues(1, 0, 0)
-        const cameraVec = vec3.fromValues(this.scene.camera.direction[0], 0, this.scene.camera.direction[2]);
+        const cameraVec = vec3.fromValues(this.scene.camera.position[0] - this.position["x"], 0, this.scene.camera.position[2] - this.position["z"]);
         
         vec3.normalize(billboardVec,billboardVec);
         vec3.normalize(cameraVec,cameraVec);
