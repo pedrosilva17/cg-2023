@@ -52,4 +52,24 @@ export class MyUtils {
 		let length = Math.sqrt(v["x"] ** 2 + v["y"] ** 2 + v["z"] ** 2);
 		return {"x": v["x"] / length, "y": v["y"] / length, "z": v["z"] / length};
 	}
+
+	static randomInteger(min, max) {
+		min = Math.ceil(min);
+		max = Math.floor(max);
+		return Math.floor(Math.random() * (max - min + 1) + min);
+	  }
+
+	static quadratic(a, b, c) {
+		const discriminant = b**2 - 4 * a * c;
+		if (discriminant > 0) {
+			const root1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+			const root2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+			return [root1, root2];
+		} else if (discriminant === 0) {
+			const root = -b / (2 * a);
+			return [root, root];
+		} else {
+			return [];
+		}
+	}
 }

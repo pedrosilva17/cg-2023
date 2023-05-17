@@ -7,7 +7,7 @@ export class MyWater extends CGFobject {
         this.plane = new MyPlane(scene, nrDivs);
 
         this.waterTexture = new CGFtexture(this.scene, "./images/waterTex.jpg");
-        this.waterMap = new CGFtexture(this.scene, "./images/waterMap2.jpg");
+        this.waterMap = new CGFtexture(this.scene, "./images/waterMap.jpg");
 
         this.waterAppearance = new CGFappearance(this.scene);
         this.waterAppearance.setSpecular(0, 0, 0, 0);

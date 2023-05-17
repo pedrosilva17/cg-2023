@@ -81,10 +81,22 @@ export class MyAnimatedCreature extends MyAnimatedObject {
 		return this.obj.position;
 	}
 
+ 	/* drawCrosshair() {
+		this.scene.pushMatrix();
+		const distanceOffset = this.obj.position["y"] > -10 ? ((this.obj.position["y"] + 10) / 500)**1.1 : 0
+		this.scene.translate(
+			this.obj.position["x"] + ((this.scene.distance + distanceOffset) / 1000) * 200 * this.scene.initialVx * Math.cos(this.scene.tAngle) * Math.cos(this.obj.yAngle) * Math.max(1, this.obj.velocity * 3),
+			this.scene.floor + 2,
+			this.obj.position["z"] - ((this.scene.distance + distanceOffset) / 1000) * 200 * this.scene.initialVx * Math.cos(this.scene.tAngle) * Math.sin(this.obj.yAngle) * Math.max(1, this.obj.velocity * 3));
+		this.obj.eye.display();
+		this.scene.popMatrix();
+	}  */
+
 	display() {
 		this.scene.pushMatrix();
 		this.scene.translate(0, this.animPos, 0);
 		super.display();
 		this.scene.popMatrix();
+		//this.drawCrosshair();
 	}
 }

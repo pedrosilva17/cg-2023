@@ -15,6 +15,7 @@ import { MyCreatureEgg } from "./objects/MyCreatureEgg.js";
 import { MyTreeGroupPatch } from "./objects/MyTreeGroupPatch.js";
 import { MyTreeRowPatch } from "./objects/MyTreeRowPatch.js";
 import { MyBillboard } from "./objects/MyBillboard.js";
+import { MyUtils } from "./MyUtils.js";
 
 /**
  * MyScene
@@ -51,14 +52,15 @@ export class MyScene extends CGFscene {
 		this.nest = new MyNest(this, 10, 20, 2, 0.7);
 		this.treePatch = new MyTreeGroupPatch(this, {"x": 100, "y": this.floor, "z": -10}, 7);
 		this.treeLine = new MyTreeRowPatch(this, {"x": 100, "y": this.floor, "z": -30}, 10);
-		this.eggList = [
-			new MyCreatureEgg(this, true, null),
-			new MyCreatureEgg(this, true, null),
-			new MyCreatureEgg(this, true, null),
-			new MyCreatureEgg(this, true, null),
-		];
+		this.numberOfEggs = 4;
+		this.eggList = [];
 
-		this.setUpdatePeriod(20);
+		for (let i = 1; i <= this.numberOfEggs; i++) {
+			this.eggList.push(new MyCreatureEgg(this, true, null));
+		};
+
+		this.updatePeriod = 20;
+		this.setUpdatePeriod(this.updatePeriod);
 		this.appStartTime = Date.now();
 		this.animatedObjects = [this.creature];
 		this.pickUp = false;
@@ -72,13 +74,16 @@ export class MyScene extends CGFscene {
 		this.initialVx = 0.5;
 		this.initialVy = 0.5;
 		this.tAngle = Math.PI/4;
-		this.gravity = 0.5;
+		this.gravity = 1;
 
 		this.fallingEggs = [];
+		this.startEgg = 0;
+		this.endEgg = 0;
+		this.distance = 0;
 
 		this.nestPos = {
 			"x": 110,
-			"y": this.floor+2,
+			"y": this.floor + 2,
 			"z": 10
 		}
 
@@ -91,10 +96,6 @@ export class MyScene extends CGFscene {
 
 		this.enableTextures(true);
 
-		this.texture = new CGFtexture(this, "images/terrain2.jpg");
-		this.appearance = new CGFappearance(this);
-		this.appearance.setTexture(this.texture);
-		this.appearance.setTextureWrap("REPEAT", "REPEAT");
 	}
 	initLights() {
 		this.lights[0].setPosition(15, 0, 5, 1);
@@ -134,6 +135,7 @@ export class MyScene extends CGFscene {
 		}
 	}
 	eggDrop(timeSinceAppStart){
+		this.startEgg = timeSinceAppStart
 		const creaturePos = this.creature.obj.position;
 		const rotation = this.creature.getRotationAngle();
 		const eggPos = {
@@ -151,6 +153,7 @@ export class MyScene extends CGFscene {
 			"peak": false
 		});
 		this.creature.dropEgg();
+		console.log(this.creature.obj.position["y"]);
 	}
 	floorCollision(eggPos) {
 		if (
@@ -168,9 +171,9 @@ export class MyScene extends CGFscene {
 	animateFallingEgg(egg, timeSinceAppStart) {
 			const elapsedTimeSecs = timeSinceAppStart-egg["time"];
 
-			egg["egg"].position["x"] += this.initialVx * Math.cos(this.tAngle) * elapsedTimeSecs * Math.cos(egg["yAngle"]);
-			egg["egg"].position["z"] -= this.initialVx * Math.cos(this.tAngle) * elapsedTimeSecs * Math.sin(egg["yAngle"]);	
-			egg["egg"].position["y"] += this.initialVy * Math.sin(this.tAngle) * elapsedTimeSecs - 0.5 * this.gravity * elapsedTimeSecs**2;
+			egg["egg"].position["x"] += this.initialVx * Math.cos(this.tAngle) * Math.cos(egg["yAngle"]) * Math.max(1, this.creature.obj.velocity * 3);
+			egg["egg"].position["z"] -= this.initialVx * Math.cos(this.tAngle) * Math.sin(egg["yAngle"]) * Math.max(1, this.creature.obj.velocity * 3);
+			egg["egg"].position["y"] += this.initialVy * Math.sin(this.tAngle) - this.gravity * elapsedTimeSecs;
 	}
 	checkKeys(timeSinceAppStart) {
 		let text = "Keys pressed: ";
@@ -276,9 +279,11 @@ export class MyScene extends CGFscene {
 				if (Math.abs(this.fallingEggs[i]["egg"].position["y"]) >= Math.abs(this.floor)) {
 					this.eggList.push(new MyCreatureEgg(this, false, {
 						"x": this.fallingEggs[i]["egg"].position["x"],
-						"y": this.floor,
+						"y": this.floor + 2,
 						"z": this.fallingEggs[i]["egg"].position["z"]
 					}))
+					this.endEgg = timeSinceAppStart
+					console.log("delta = " + (this.endEgg - this.startEgg))
 					this.fallingEggs = this.fallingEggs.filter((egg) => egg != this.fallingEggs[i]);
 					break;
 				}
@@ -295,7 +300,8 @@ export class MyScene extends CGFscene {
 			this.camera.setPosition(cameraPos);
 			this.camera.setTarget(target);
 		}
-
+		//this.distance = (MyUtils.quadratic(-0.5 * this.gravity, Math.sin(this.tAngle) * this.initialVy, this.creature.obj.position["y"] - this.floor)[1]) * 50;
+		console.log(this.distance);
 		this.water.update(timeSinceAppStart);
 	}
 
@@ -316,8 +322,7 @@ export class MyScene extends CGFscene {
 		// ---- BEGIN Primitive drawing section
 
 		this.pushMatrix();
-		this.appearance.apply();
-		this.translate(0, -85, 0);
+		this.translate(0, -80, 0);
 		this.scale(400, 400, 400);
 		this.rotate(-Math.PI / 2.0, 1, 0, 0);
 		this.water.display();
@@ -325,7 +330,6 @@ export class MyScene extends CGFscene {
 		this.setDefaultAppearance();
 
 		this.pushMatrix();
-		this.appearance.apply();
 		this.translate(0, -100, 0);
 		this.scale(400, 400, 400);
 		this.rotate(-Math.PI / 2.0, 1, 0, 0);

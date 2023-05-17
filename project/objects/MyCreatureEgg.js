@@ -1,4 +1,5 @@
 import { CGFappearance, CGFobject, CGFtexture } from "../../lib/CGF.js";
+import { MyUtils } from "../MyUtils.js";
 import { MySphere } from "../primitives/MySphere.js";
 
 export class MyCreatureEgg extends CGFobject {
@@ -8,7 +9,7 @@ export class MyCreatureEgg extends CGFobject {
 		this.eggBottom = new MySphere(scene, 20, 20, false, 0.5, 0.5);
         this.angleScale = Math.random() * 2 - 1;
 		if (randomize) {
-			this.position = {"x": Math.random() * (90 + 70) - 70, "y": this.scene.floor, "z": Math.random() * (33 + 70) - 70};
+			this.position = {"x": MyUtils.randomInteger(10, 70), "y": this.scene.floor + 2, "z": MyUtils.randomInteger(30, 70)};
 		} else if (position) {
 			this.position = position;
 		} else {
@@ -43,5 +44,5 @@ export class MyCreatureEgg extends CGFobject {
         this.scene.popMatrix();
 
 		this.scene.popMatrix();
-	}
+	} 
 }

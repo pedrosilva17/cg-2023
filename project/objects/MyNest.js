@@ -4,7 +4,7 @@ import { MyCreatureEgg } from "./MyCreatureEgg.js";
 
 
 export class MyNest extends CGFobject {
-	constructor(scene, torusSlices, tubeSlices, torusRadius, tubeRadius) {
+	constructor(scene, torusSlices, tubeSlices, torusRadius, tubeRadius, nestSize) {
 		super(scene);
 		this.torus = new MyTorus(scene, torusSlices, tubeSlices, torusRadius, tubeRadius);
 
@@ -19,6 +19,7 @@ export class MyNest extends CGFobject {
 		this.nestAppearance.setTexture(this.nestTexture);
 		this.nestAppearance.setTextureWrap("MIRRORED_REPEAT", "MIRRORED_REPEAT");
 		
+		nestSize === undefined ? this.nestSize = 4 : this.nestSize = nestSize;
 		this.eggs = [];
 	}
 
@@ -26,9 +27,9 @@ export class MyNest extends CGFobject {
 		for (let i = 0; i < this.eggs.length; i++) {
 			this.scene.pushMatrix();
 			this.scene.translate(
-				this.centerRadius * Math.cos(2*Math.PI*i/this.eggs.length),
+				this.centerRadius * Math.cos(2*Math.PI*i/this.nestSize),
 				0,
-				this.centerRadius * Math.sin(2*Math.PI*i/this.eggs.length)
+				this.centerRadius * Math.sin(2*Math.PI*i/this.nestSize),
 			);
 			this.eggs[i].display();
 			this.scene.popMatrix();
