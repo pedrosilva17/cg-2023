@@ -48,6 +48,7 @@ export class MyInterface extends CGFinterface {
 		// Experimental (dangerous) features
 		const experimentalFeats = this.gui.addFolder("Experimental Features");
 		experimentalFeats.add(this.scene.creature, "crosshairToggle").name("Show Crosshair")
+		experimentalFeats.add(this.scene, "updatePeriod", 20, 50).name("Update Period")
 
 		this.initKeys();
         

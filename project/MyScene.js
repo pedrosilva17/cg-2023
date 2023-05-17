@@ -27,6 +27,7 @@ export class MyScene extends CGFscene {
 		super();
 	}
 	init(application) {
+
 		super.init(application);
 		
 		this.floor = -55;
@@ -53,8 +54,8 @@ export class MyScene extends CGFscene {
 		this.nest = new MyNest(this, 10, 20, 2, 0.7);
 		this.forest1 = new MyForest(this, 2);
 		this.forest2 = new MyForest(this, 3);
- 		this.treePatch1 = new MyTreeGroupPatch(this, {"x": 105, "y": this.floor + 1, "z": 30}, 5);
-		this.treePatch2 = new MyTreeGroupPatch(this, {"x": 20, "y": this.floor + 1, "z": 80}, 7);
+ 		this.treePatch1 = new MyTreeGroupPatch(this, {"x": 110, "y": this.floor + 1, "z": 23}, 8);
+		this.treePatch2 = new MyTreeGroupPatch(this, {"x": 30, "y": this.floor + 1, "z": 75}, 7);
 		this.treeLine1 = new MyTreeRowPatch(this, {"x": -40, "y": this.floor + 1, "z": 100}, 10);
 		this.treeLine2 = new MyTreeRowPatch(this, {"x": -60, "y": this.floor + 1, "z": 100}, 10);
 		this.treeLine3 = new MyTreeRowPatch(this, {"x": -20, "y": this.floor + 1, "z": 100}, 10, Math.PI/8);
@@ -66,7 +67,7 @@ export class MyScene extends CGFscene {
 			this.eggList.push(new MyCreatureEgg(this, true, null));
 		};
 
-		this.updatePeriod = 20;
+		this.updatePeriod = 50;
 		this.setUpdatePeriod(this.updatePeriod);
 		this.appStartTime = Date.now();
 		this.animatedObjects = [this.creature];
@@ -319,6 +320,9 @@ export class MyScene extends CGFscene {
 		const measure = MyUtils.quadratic(-0.5 * this.gravity, Math.sin(this.tAngle) * this.initialVy, this.creature.obj.position["y"] - this.floor)[1]
 		this.fallTime = measure === NaN ? 0 : measure + 0.05;
 		this.water.update(timeSinceAppStart);
+		this.diff = timeSinceAppStart - this.counter;
+		console.log(this.diff)
+		this.counter = timeSinceAppStart
 	}
 
 	display() {

@@ -85,7 +85,7 @@ export class MyAnimatedCreature extends MyAnimatedObject {
 	}
 
 	drawCrosshair() {
-		const offset = ((this.scene.fallTime/(this.scene.updatePeriod * 0.001)) * 0.62)
+		const offset = (this.scene.fallTime/(this.scene.updatePeriod+5))*1000
 		this.scene.pushMatrix();
 		this.scene.translate(
 			(this.obj.position["x"] + Math.cos(-this.obj.yAngle) * 2) + offset * this.scene.initialVx * Math.cos(this.scene.tAngle) * Math.cos(this.obj.yAngle) * Math.max(1, this.obj.velocity * 3),
