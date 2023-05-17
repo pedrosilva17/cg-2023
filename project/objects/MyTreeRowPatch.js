@@ -7,11 +7,12 @@ import { MyBillboard } from "./MyBillboard.js";
  * @param scene - Reference to MyScene object
  */
 export class MyTreeRowPatch extends CGFobject {
-    constructor(scene, position, offset) {
+    constructor(scene, position, offset, rotation) {
 		super(scene);
         this.trees = [];
         this.position = position;
         this.offset = offset; // regular space between trees
+        rotation === undefined ? this.rotation = 0 : this.rotation = rotation;
         this.textures = [
             new CGFtexture(this.scene, "./images/billboardtree.png"),
             new CGFtexture(this.scene, "./images/billboardtree2.png"),
@@ -35,10 +36,13 @@ export class MyTreeRowPatch extends CGFobject {
     }
 
     display() {
+        this.scene.pushMatrix();
+        this.scene.rotate(this.rotation, 0, 1, 0);
         for (let i = 0; i < this.trees.length; i++) {
             this.scene.pushMatrix();
             this.trees[i].display();
             this.scene.popMatrix();
         }
+        this.scene.popMatrix();
     }
 }

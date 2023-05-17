@@ -17,7 +17,7 @@ export class MyCreature extends CGFobject {
 		super(scene);
 		this.bodyTexture = new CGFtexture(scene, "images/fur.jpg");
 		this.wingTexture = new CGFtexture(scene, "images/feathers.avif");
-		// this.body = new MySphere(scene, 60, 120, false, 1.5);
+		this.simpleBody = new MySphere(scene, 60, 120, false, 1.5);
 		this.body = new CGFOBJModel(this.scene, 'models/body.obj');
 		this.eye = new MyEye(scene);
 		this.limb = new MyLimb(scene);
@@ -32,6 +32,7 @@ export class MyCreature extends CGFobject {
 		this.pitch = 0;
 		this.position = position == undefined ? {"x": 50, "y": -30, "z": 20} :
 		{"x": position[0], "y": position[1], "z": position[2]};
+		this.simplify = false;
 
 		this.defaultAppearance = new CGFappearance(scene);
 		this.defaultAppearance.setSpecular(0, 0, 0, 0);
@@ -42,8 +43,13 @@ export class MyCreature extends CGFobject {
 		this.defaultAppearance = MyUtils.changeTexture(this.defaultAppearance, this.bodyTexture);
 		this.scene.pushMatrix();
 		this.scene.rotate(Math.PI/2, 0, 1, 0);
-		this.scene.scale(0.25,0.25,0.25);
-		this.body.display();
+		if (this.simplify) {
+			this.simpleBody.display();
+		}
+		else {
+			this.scene.scale(0.25, 0.25, 0.25);
+			this.body.display();
+		}
 		this.scene.popMatrix();
 	}
 
@@ -62,7 +68,7 @@ export class MyCreature extends CGFobject {
 	displayEyes() {
 		this.defaultAppearance = MyUtils.unbind(this.defaultAppearance, this.bodyTexture);
 		this.scene.pushMatrix();
-		this.scene.rotate(Math.PI / 8, 0, 0, 1);
+		this.simplify ? this.scene.rotate(Math.PI / 8, 0, 0, 1) : this.scene.rotate(Math.PI / 16, 0, 0, 1);
 		this.scene.translate(1.5, 0, 0.25);
 		this.eye.display();
 		this.scene.translate(0, 0, -0.5);
@@ -97,7 +103,7 @@ export class MyCreature extends CGFobject {
 
 	displayLeg(sideIndex) {
 		this.scene.pushMatrix();
-		this.scene.translate(0, -0.7, 0.6 * sideIndex);
+		this.simplify ? this.scene.translate(0, -1, 0.6 * sideIndex) : this.scene.translate(0, -0.7, 0.6 * sideIndex);
 		this.scene.rotate(Math.PI / 16, 1 * sideIndex, 0, 0);
 		this.scene.rotate(Math.PI / 3, 0, 0, -1);
 		this.scene.rotate(this.feetAngle * sideIndex, 0, 0, 1);

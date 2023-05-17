@@ -1,10 +1,13 @@
 import { MyAnimatedObject } from "./MyAnimatedObject.js";
 import { MyCreature } from "./MyCreature.js";
 import { MyCreatureEgg } from "./MyCreatureEgg.js";
+import { MyCrosshair } from "./MyCrosshair.js";
 export class MyAnimatedCreature extends MyAnimatedObject {
 	constructor(scene, position) {
 		let kuriboh = new MyCreature(scene, position);
 		super(scene, kuriboh);
+		this.crosshair = new MyCrosshair(scene, "./images/crosshair2.png")
+		this.crosshairToggle = false;
 	}
 
 	update(t) {
@@ -39,7 +42,7 @@ export class MyAnimatedCreature extends MyAnimatedObject {
 	}
 
 	reset() {
-		this.obj.position = {"x": 50, "y": -30, "z": 20};
+		this.obj.position = { x: 50, y: -30, z: 20 };
 		this.obj.yAngle = 0;
 		this.obj.velocity = 0;
 	}
@@ -47,7 +50,7 @@ export class MyAnimatedCreature extends MyAnimatedObject {
 	idleAnimation(t) {
 		if (t >= 0) {
 			this.animPos = this.sinWave(Math.PI * t, 0.2);
-			this.obj.feetAngle = this.sinWave(Math.PI / 2 * t, 0.2);
+			this.obj.feetAngle = this.sinWave((Math.PI / 2) * t, 0.2);
 		}
 	}
 
@@ -64,7 +67,7 @@ export class MyAnimatedCreature extends MyAnimatedObject {
 	grabEgg() {
 		this.obj.egg = new MyCreatureEgg(this.scene, false, null);
 	}
-	
+
 	dropEgg() {
 		this.obj.egg = null;
 	}
@@ -81,22 +84,22 @@ export class MyAnimatedCreature extends MyAnimatedObject {
 		return this.obj.position;
 	}
 
- 	/* drawCrosshair() {
+	drawCrosshair() {
+		const offset = ((this.scene.fallTime/(this.scene.updatePeriod * 0.001)) * 0.62)
 		this.scene.pushMatrix();
-		const distanceOffset = this.obj.position["y"] > -10 ? ((this.obj.position["y"] + 10) / 500)**1.1 : 0
 		this.scene.translate(
-			this.obj.position["x"] + ((this.scene.distance + distanceOffset) / 1000) * 200 * this.scene.initialVx * Math.cos(this.scene.tAngle) * Math.cos(this.obj.yAngle) * Math.max(1, this.obj.velocity * 3),
+			(this.obj.position["x"] + Math.cos(-this.obj.yAngle) * 2) + offset * this.scene.initialVx * Math.cos(this.scene.tAngle) * Math.cos(this.obj.yAngle) * Math.max(1, this.obj.velocity * 3),
 			this.scene.floor + 2,
-			this.obj.position["z"] - ((this.scene.distance + distanceOffset) / 1000) * 200 * this.scene.initialVx * Math.cos(this.scene.tAngle) * Math.sin(this.obj.yAngle) * Math.max(1, this.obj.velocity * 3));
-		this.obj.eye.display();
+			(this.obj.position["z"] + Math.sin(-this.obj.yAngle) * 2) - offset * this.scene.initialVx * Math.cos(this.scene.tAngle) * Math.sin(this.obj.yAngle) * Math.max(1, this.obj.velocity * 3));
+		this.crosshair.display();
 		this.scene.popMatrix();
-	}  */
+	}
 
 	display() {
 		this.scene.pushMatrix();
 		this.scene.translate(0, this.animPos, 0);
 		super.display();
 		this.scene.popMatrix();
-		//this.drawCrosshair();
+		if (this.crosshairToggle) this.drawCrosshair();
 	}
 }

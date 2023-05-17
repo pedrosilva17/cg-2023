@@ -16,6 +16,7 @@ import { MyTreeGroupPatch } from "./objects/MyTreeGroupPatch.js";
 import { MyTreeRowPatch } from "./objects/MyTreeRowPatch.js";
 import { MyBillboard } from "./objects/MyBillboard.js";
 import { MyUtils } from "./MyUtils.js";
+import { MyForest } from "./objects/MyForest.js";
 
 /**
  * MyScene
@@ -50,11 +51,14 @@ export class MyScene extends CGFscene {
 		this.panorama = new MyPanorama(this, this.scenery);
 		this.creature = new MyAnimatedCreature(this);
 		this.nest = new MyNest(this, 10, 20, 2, 0.7);
-		this.treePatch1 = new MyTreeGroupPatch(this, {"x": 100, "y": this.floor + 1, "z": -10}, 7);
-		this.treePatch2 = new MyTreeGroupPatch(this, {"x": 90, "y": this.floor + 1, "z": 20}, 7);
-		this.treePatch3 = new MyTreeGroupPatch(this, {"x": 70, "y": this.floor + 1, "z": 30}, 7);
-		this.treeLine1 = new MyTreeRowPatch(this, {"x": 50, "y": this.floor + 1, "z": 30}, 10);
-		this.treeLine2 = new MyTreeRowPatch(this, {"x": 100, "y": this.floor + 1, "z": -30}, 10);
+		this.forest1 = new MyForest(this, 2);
+		this.forest2 = new MyForest(this, 3);
+ 		this.treePatch1 = new MyTreeGroupPatch(this, {"x": 105, "y": this.floor + 1, "z": 30}, 5);
+		this.treePatch2 = new MyTreeGroupPatch(this, {"x": 20, "y": this.floor + 1, "z": 80}, 7);
+		this.treeLine1 = new MyTreeRowPatch(this, {"x": -40, "y": this.floor + 1, "z": 100}, 10);
+		this.treeLine2 = new MyTreeRowPatch(this, {"x": -60, "y": this.floor + 1, "z": 100}, 10);
+		this.treeLine3 = new MyTreeRowPatch(this, {"x": -20, "y": this.floor + 1, "z": 100}, 10, Math.PI/8);
+		this.treeLine4 = new MyTreeRowPatch(this, {"x": 0, "y": this.floor + 1, "z": 110}, 10, Math.PI/4);
 		this.numberOfEggs = 4;
 		this.eggList = [];
 
@@ -74,20 +78,30 @@ export class MyScene extends CGFscene {
 		this.grabDuration = 2;
 		this.grabLeniency = 5;
 
-		this.initialVx = 0.5;
-		this.initialVy = 0.5;
+		this.initialVx = 1;
+		this.initialVy = 10;
 		this.tAngle = Math.PI/4;
-		this.gravity = 1;
+		this.gravity = 30;
 
 		this.fallingEggs = [];
 		this.startEgg = 0;
 		this.endEgg = 0;
-		this.distance = 0;
+		this.fallTime = 0;
 
 		this.nestPos = {
-			"x": 110,
+			"x": 90,
 			"y": this.floor + 2,
-			"z": 10
+			"z": 50
+		}
+		this.forest1Pos = {
+			"x": 90,
+			"y": this.floor,
+			"z": -20
+		}
+		this.forest2Pos = {
+			"x": -35,
+			"y": this.floor,
+			"z": 40
 		}
 
 		//Objects connected to MyInterface
@@ -156,7 +170,6 @@ export class MyScene extends CGFscene {
 			"peak": false
 		});
 		this.creature.dropEgg();
-		console.log(this.creature.obj.position["y"]);
 	}
 	floorCollision(eggPos) {
 		if (
@@ -176,7 +189,7 @@ export class MyScene extends CGFscene {
 
 			egg["egg"].position["x"] += this.initialVx * Math.cos(this.tAngle) * Math.cos(egg["yAngle"]) * Math.max(1, this.creature.obj.velocity * 3);
 			egg["egg"].position["z"] -= this.initialVx * Math.cos(this.tAngle) * Math.sin(egg["yAngle"]) * Math.max(1, this.creature.obj.velocity * 3);
-			egg["egg"].position["y"] += this.initialVy * Math.sin(this.tAngle) - this.gravity * elapsedTimeSecs;
+			egg["egg"].position["y"] = egg["startY"] + this.initialVy * Math.sin(this.tAngle) * elapsedTimeSecs - 0.5 * this.gravity * elapsedTimeSecs**2;
 	}
 	checkKeys(timeSinceAppStart) {
 		let text = "Keys pressed: ";
@@ -297,14 +310,14 @@ export class MyScene extends CGFscene {
 
 		if (this.followCamera) {
 			const creaturePos = this.creature.getPosition();
-			const target = vec4.fromValues(creaturePos["x"], creaturePos["y"] - 10, creaturePos["z"], 0);
+			const target = vec4.fromValues(creaturePos["x"], creaturePos["y"] - 5, creaturePos["z"], 0);
 			const rotation = this.creature.getRotationAngle();
 			const cameraPos = vec4.fromValues(creaturePos["x"] - 10 * Math.cos(rotation), creaturePos["y"], creaturePos["z"] + 10* Math.sin(rotation), 0);
 			this.camera.setPosition(cameraPos);
 			this.camera.setTarget(target);
 		}
-		//this.distance = (MyUtils.quadratic(-0.5 * this.gravity, Math.sin(this.tAngle) * this.initialVy, this.creature.obj.position["y"] - this.floor)[1]) * 50;
-		console.log(this.distance);
+		const measure = MyUtils.quadratic(-0.5 * this.gravity, Math.sin(this.tAngle) * this.initialVy, this.creature.obj.position["y"] - this.floor)[1]
+		this.fallTime = measure === NaN ? 0 : measure + 0.05;
 		this.water.update(timeSinceAppStart);
 	}
 
@@ -358,12 +371,19 @@ export class MyScene extends CGFscene {
 		this.translate(this.nestPos["x"], this.nestPos["y"], this.nestPos["z"]);
 		this.nest.display();
 		this.popMatrix();
-
+		this.pushMatrix();
+		this.translate(this.forest1Pos["x"], this.forest1Pos["y"], this.forest1Pos["z"]);
+		this.forest1.display();
+		this.popMatrix();
+		this.pushMatrix();
+		this.translate(this.forest2Pos["x"], this.forest2Pos["y"], this.forest2Pos["z"]);
+		this.forest2.display();
+		this.popMatrix();
 		this.treePatch1.display();
 		this.treePatch2.display();
-		this.treePatch3.display();
-		this.treeLine1.display()
-		this.treeLine2.display()
+		this.treeLine1.display();
+		this.treeLine3.display();
+		this.treeLine4.display();
 		// ---- END Primitive drawing section
 	}
 }

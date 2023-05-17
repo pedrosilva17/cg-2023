@@ -24,6 +24,10 @@ export class MyInterface extends CGFinterface {
 
 		this.cameraCheckbox = camera.add(this.scene, "followCamera").name("Follow Camera").__checkbox;
 
+		// Creature
+		const creature = this.gui.addFolder("Creature");
+		creature.add(this.scene.creature.obj, "simplify").name("Simple Body Model");
+
 		// Grab
 		const grab = this.gui.addFolder("Grab");
 		grab.add(this.scene, "grabLeniency", 0, 10).name("Grab Leniency");
@@ -31,16 +35,19 @@ export class MyInterface extends CGFinterface {
 
 		// Throw
 		const eggThrow = this.gui.addFolder("Throw");
-		eggThrow.add(this.scene, "initialVx", 0, 5).name("Initial Vx");
-		eggThrow.add(this.scene, "initialVy", 0, 5).name("Initial Vy");
+		eggThrow.add(this.scene, "initialVx", 0, 2).name("Initial Vx");
+		eggThrow.add(this.scene, "initialVy", 0, 20).name("Initial Vy");
 		eggThrow.add(this.scene, "tAngle", 0, Math.PI/2).name("Throw Angle");
-		eggThrow.add(this.scene, "gravity", 0, 10).name("Gravity");
+		eggThrow.add(this.scene, "gravity", 25, 35).name("Gravity");
 
 		// Factors
 		const constFactors = this.gui.addFolder("Constant Factors");
-
 		constFactors.add(this.scene, "scaleFactor", 0.5, 3).name("Scale Factor");
 		constFactors.add(this.scene, "speedFactor", 0.1, 3).name("Speed Factor");
+
+		// Experimental (dangerous) features
+		const experimentalFeats = this.gui.addFolder("Experimental Features");
+		experimentalFeats.add(this.scene.creature, "crosshairToggle").name("Show Crosshair")
 
 		this.initKeys();
         
