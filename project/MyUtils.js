@@ -24,7 +24,7 @@ export class MyUtils {
 	}
 
 	static changeColor(appr, color) {
-		appr.setColor(...MyUtils.hexToRgba(color));
+		appr.setColor(color[0] / 255, color[1] / 255, color[2] / 255, color[3] / 255);
 		appr.apply();
 		return appr;
 	}
@@ -37,10 +37,10 @@ export class MyUtils {
 
 	static hexToRgba(hex) {
 		hex = hex.replace("#", "");
-		let r = parseInt(hex.substring(0, 2), 16) / 255;
-		let g = parseInt(hex.substring(2, 4), 16) / 255;
-		let b = parseInt(hex.substring(4, 6), 16) / 255;
-		let a = parseInt(hex.substring(6, 8), 16) / 255;
+		let r = parseInt(hex.substring(0, 2), 16);
+		let g = parseInt(hex.substring(2, 4), 16);
+		let b = parseInt(hex.substring(4, 6), 16);
+		let a = parseInt(hex.substring(6, 8), 16);
 		return [r, g, b, a];
 	}
 

@@ -11,6 +11,9 @@ import { MySphere } from "../primitives/MySphere.js";
 export class MyEye extends CGFobject {
 	constructor(scene) {
 		super(scene);
+		this.scleraColor = MyUtils.hexToRgba(MyUtils.lightYellow);
+		this.irisColor = MyUtils.hexToRgba(MyUtils.black);
+		this.pupilColor = MyUtils.hexToRgba(MyUtils.white);
 		this.base = new MySphere(scene, 30, 60, false, 0.3);
 		this.iris = new MySphere(scene, 30, 60, false, 0.25);
 		this.pupil = new MySphere(scene, 15, 30, false, 0.1);
@@ -20,18 +23,18 @@ export class MyEye extends CGFobject {
 
 	display() {
 		// base
-		MyUtils.changeColor(this.eyeAppearance, MyUtils.lightYellow);
+		MyUtils.changeColor(this.eyeAppearance, this.scleraColor);
 		this.scene.pushMatrix();
 		this.scene.scale(0.2, 1, 0.7);
 		this.base.display();
 
 		// iris
-		MyUtils.changeColor(this.eyeAppearance, MyUtils.black);
+		MyUtils.changeColor(this.eyeAppearance, this.irisColor);
 		this.scene.translate(0.1, 0, 0);
 		this.iris.display();
 
 		// pupil
-		MyUtils.changeColor(this.eyeAppearance, MyUtils.white);
+		MyUtils.changeColor(this.eyeAppearance, this.pupilColor);
 		this.scene.translate(0.2, 0, 0);
 		this.scene.scale(1, 0.7, 1);
 		this.pupil.display();

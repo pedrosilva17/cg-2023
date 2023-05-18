@@ -13,6 +13,8 @@ import { MyUnitCubeQuad } from "../primitives/MyUnitCubeQuad.js";
 export class MyLimb extends CGFobject {
 	constructor(scene) {
 		super(scene);
+		this.skinColor = MyUtils.hexToRgba(MyUtils.green);
+		this.clawColor = MyUtils.hexToRgba(MyUtils.lightYellow);
 		this.arm = new MyPrism(scene, 200, 10);
 		this.hand = new MySphere(scene, 30, 60, false, 1);
 		this.claw = new MyCone(scene, 15);
@@ -32,7 +34,7 @@ export class MyLimb extends CGFobject {
 
 	display() {
 		// arm / leg
-		MyUtils.changeColor(this.limbAppearance, MyUtils.green);
+		MyUtils.changeColor(this.limbAppearance, this.skinColor);
 		this.scene.pushMatrix();
 		this.scene.rotate(Math.PI / 2, 0, 1, 0);
 		this.scene.scale(0.05, 0.05, 0.6);
@@ -47,7 +49,7 @@ export class MyLimb extends CGFobject {
 		this.scene.popMatrix();
 
 		// claws
-		MyUtils.changeColor(this.limbAppearance, MyUtils.lightYellow);
+		MyUtils.changeColor(this.limbAppearance, this.clawColor);
 		this.scene.pushMatrix();
 		this.scene.translate(0.86, 0, 0);
 		this.scene.rotate(Math.PI / 2, 0, 0, -1);	

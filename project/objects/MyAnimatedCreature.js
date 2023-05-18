@@ -6,14 +6,12 @@ export class MyAnimatedCreature extends MyAnimatedObject {
 	constructor(scene, position) {
 		let kuriboh = new MyCreature(scene, position);
 		super(scene, kuriboh);
-		this.crosshair = new MyCrosshair(scene, "./images/crosshair2.png")
+		this.crosshair = new MyCrosshair(scene, "./images/crosshair.png")
 		this.crosshairToggle = false;
 	}
 
 	update(t) {
 		let elapsedTimeSecs = t - this.startTime;
-		//console.log(elapsedTimeSecs);
-		//console.log(this.obj.velocity);
 		this.idleAnimation(elapsedTimeSecs);
 		this.wingBeat(elapsedTimeSecs);
 		this.obj.position["x"] += 1 * this.obj.velocity * Math.cos(this.obj.yAngle);

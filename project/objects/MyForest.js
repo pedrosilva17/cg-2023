@@ -8,15 +8,16 @@ import { MyTreeGroupPatch } from "./MyTreeGroupPatch.js";
  * @param scene - Reference to MyScene object
  */
 export class MyForest extends CGFobject {
-	constructor(scene, size) {
+	constructor(scene, position, size) {
 		super(scene);
 		this.patches = [];
+		this.position = position;
         for (let i = 0; i < size; i++) {
             for (let j = 0; j < size; j++) {
                 let patchPosition = {
-                    "x": i * 20,
-                    "y": 0,
-                    "z": j * 20
+                    "x": this.position["x"] + i * 20,
+                    "y": this.position["y"],
+                    "z": this.position["z"] + j * 20
                 };
                 this.patches.push(new MyTreeGroupPatch(scene, patchPosition, MyUtils.randomInteger(4, 10)));
             }

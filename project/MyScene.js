@@ -52,8 +52,18 @@ export class MyScene extends CGFscene {
 		this.panorama = new MyPanorama(this, this.scenery);
 		this.creature = new MyAnimatedCreature(this);
 		this.nest = new MyNest(this, 10, 20, 2, 0.7);
-		this.forest1 = new MyForest(this, 2);
-		this.forest2 = new MyForest(this, 3);
+		this.forest1Pos = {
+			"x": 90,
+			"y": this.floor,
+			"z": -20
+		}
+		this.forest2Pos = {
+			"x": -35,
+			"y": this.floor,
+			"z": 40
+		}
+		this.forest1 = new MyForest(this, this.forest1Pos, 2);
+		this.forest2 = new MyForest(this, this.forest2Pos, 3);
  		this.treePatch1 = new MyTreeGroupPatch(this, {"x": 110, "y": this.floor + 1, "z": 23}, 8);
 		this.treePatch2 = new MyTreeGroupPatch(this, {"x": 30, "y": this.floor + 1, "z": 75}, 7);
 		this.treeLine1 = new MyTreeRowPatch(this, {"x": -40, "y": this.floor + 1, "z": 100}, 10);
@@ -321,7 +331,6 @@ export class MyScene extends CGFscene {
 		this.fallTime = measure === NaN ? 0 : measure + 0.05;
 		this.water.update(timeSinceAppStart);
 		this.diff = timeSinceAppStart - this.counter;
-		console.log(this.diff)
 		this.counter = timeSinceAppStart
 	}
 
@@ -375,14 +384,8 @@ export class MyScene extends CGFscene {
 		this.translate(this.nestPos["x"], this.nestPos["y"], this.nestPos["z"]);
 		this.nest.display();
 		this.popMatrix();
-		this.pushMatrix();
-		this.translate(this.forest1Pos["x"], this.forest1Pos["y"], this.forest1Pos["z"]);
 		this.forest1.display();
-		this.popMatrix();
-		this.pushMatrix();
-		this.translate(this.forest2Pos["x"], this.forest2Pos["y"], this.forest2Pos["z"]);
 		this.forest2.display();
-		this.popMatrix();
 		this.treePatch1.display();
 		this.treePatch2.display();
 		this.treeLine1.display();

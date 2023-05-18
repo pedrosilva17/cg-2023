@@ -21,12 +21,17 @@ export class MyInterface extends CGFinterface {
 		
 		// Camera controls
 		const camera = this.gui.addFolder("Camera");
-
 		this.cameraCheckbox = camera.add(this.scene, "followCamera").name("Follow Camera").__checkbox;
+
 
 		// Creature
 		const creature = this.gui.addFolder("Creature");
 		creature.add(this.scene.creature.obj, "simplify").name("Simple Body Model");
+		creature.addColor(this.scene.creature.obj.limb, "skinColor").name("Skin Color");
+		creature.addColor(this.scene.creature.obj.limb, "clawColor").name("Claw Color");
+		creature.addColor(this.scene.creature.obj.eye, "scleraColor").name("Sclera Color");
+		creature.addColor(this.scene.creature.obj.eye, "irisColor").name("Iris Color");
+		creature.addColor(this.scene.creature.obj.eye, "pupilColor").name("Pupil Color");
 
 		// Grab
 		const grab = this.gui.addFolder("Grab");
@@ -38,7 +43,7 @@ export class MyInterface extends CGFinterface {
 		eggThrow.add(this.scene, "initialVx", 0, 2).name("Initial Vx");
 		eggThrow.add(this.scene, "initialVy", 0, 20).name("Initial Vy");
 		eggThrow.add(this.scene, "tAngle", 0, Math.PI/2).name("Throw Angle");
-		eggThrow.add(this.scene, "gravity", 25, 35).name("Gravity");
+		eggThrow.add(this.scene, "gravity", 5, 50).name("Gravity");
 
 		// Factors
 		const constFactors = this.gui.addFolder("Constant Factors");
