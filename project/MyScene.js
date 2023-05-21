@@ -77,7 +77,7 @@ export class MyScene extends CGFscene {
 			this.eggList.push(new MyCreatureEgg(this, true, null));
 		};
 
-		this.updatePeriod = 50;
+		this.updatePeriod = 30;
 		this.setUpdatePeriod(this.updatePeriod);
 		this.appStartTime = Date.now();
 		this.animatedObjects = [this.creature];
@@ -175,7 +175,10 @@ export class MyScene extends CGFscene {
 		this.fallingEggs.push({
 			"egg": droppedEgg,
 			"time": timeSinceAppStart,
+			"startX": eggPos["x"],
 			"startY": eggPos["y"],
+			"startZ": eggPos["z"],
+			"creatureVelocity": this.creature.obj.velocity,
 			"fallDist": (this.floor - 10) - eggPos["y"],
 			"yAngle": rotation,
 			"peak": false
@@ -198,8 +201,8 @@ export class MyScene extends CGFscene {
 	animateFallingEgg(egg, timeSinceAppStart) {
 			const elapsedTimeSecs = timeSinceAppStart-egg["time"];
 
-			egg["egg"].position["x"] += this.initialVx * Math.cos(this.tAngle) * Math.cos(egg["yAngle"]) * Math.max(1, this.creature.obj.velocity * 3);
-			egg["egg"].position["z"] -= this.initialVx * Math.cos(this.tAngle) * Math.sin(egg["yAngle"]) * Math.max(1, this.creature.obj.velocity * 3);
+			egg["egg"].position["x"] = egg["startX"] + this.initialVx * Math.max(1, egg["creatureVelocity"] * 3) * Math.cos(this.tAngle) * Math.cos(egg["yAngle"]) * elapsedTimeSecs * 15;
+			egg["egg"].position["z"] = egg["startZ"] - this.initialVx * Math.max(1, egg["creatureVelocity"] * 3) * Math.cos(this.tAngle) * Math.sin(egg["yAngle"]) * elapsedTimeSecs * 15;
 			egg["egg"].position["y"] = egg["startY"] + this.initialVy * Math.sin(this.tAngle) * elapsedTimeSecs - 0.5 * this.gravity * elapsedTimeSecs**2;
 	}
 	checkKeys(timeSinceAppStart) {
