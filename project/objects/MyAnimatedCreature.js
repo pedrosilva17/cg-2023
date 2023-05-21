@@ -6,7 +6,7 @@ export class MyAnimatedCreature extends MyAnimatedObject {
 	constructor(scene, position) {
 		let kuriboh = new MyCreature(scene, position);
 		super(scene, kuriboh);
-		this.crosshair = new MyCrosshair(scene, "./images/crosshair.png")
+		this.crosshair = new MyCrosshair(scene, "./images/crosshair.png");
 		this.crosshairToggle = false;
 	}
 

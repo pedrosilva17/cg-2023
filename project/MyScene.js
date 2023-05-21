@@ -116,7 +116,7 @@ export class MyScene extends CGFscene {
 		}
 
 		//Objects connected to MyInterface
-		this.displayAxis = true;
+		this.displayAxis = false;
 		this.scaleFactor = 1;
 		this.speedFactor = 1;
 		this.followCamera = false;

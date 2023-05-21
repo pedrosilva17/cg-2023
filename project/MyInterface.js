@@ -17,7 +17,8 @@ export class MyInterface extends CGFinterface {
 		// https://github.com/dataarts/dat.gui/blob/master/API.md
 		this.gui = new dat.GUI();
 		
-		this.gui.add(this.scene, "displayAxis").name("Display Axis");
+		const displays = this.gui.addFolder("Displays");
+		displays.add(this.scene, "displayAxis").name("Display Axis");
 		
 		// Camera controls
 		const camera = this.gui.addFolder("Camera");
@@ -50,7 +51,7 @@ export class MyInterface extends CGFinterface {
 		constFactors.add(this.scene, "scaleFactor", 0.5, 3).name("Scale Factor");
 		constFactors.add(this.scene, "speedFactor", 0.1, 3).name("Speed Factor");
 
-		// Experimental (dangerous) features
+		// Experimental features
 		const experimentalFeats = this.gui.addFolder("Experimental Features");
 		experimentalFeats.add(this.scene.creature, "crosshairToggle").name("Show Crosshair")
 		experimentalFeats.add(this.scene, "updatePeriod", 20, 50).name("Update Period")
