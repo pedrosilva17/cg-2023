@@ -17,11 +17,29 @@ canvas {
     width: 100%;
     height: 100%;
 }
+#controls {
+    padding: 1em;
+    color: white;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+}
 </style>
 </head>
 <body>
 
 <script type="module" src="main.js"></script>
-
+<div id="controls">
+    <h1>Controls:</h1>
+    <ul>
+        <li>WASD: Move</li>
+        <li>Spacebar: Fly up</li>
+        <li>Left Shift: Fly down</li>
+        <li>P: Grab egg</li>
+        <li>O: Throw egg</li>
+        <li>F: Toggle third-person camera</li>
+        <li>R: Reset position</li>
+    </ul>
+</div>
 </body>
 </html>
